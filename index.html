@@ -6,7 +6,10 @@
   <meta name="theme-color" content="#fa2828">
   <meta name="description" content="공연부터 야구까지, 내 좌석을 고르는 티켓팅 리허설. 대기부터 모의결제까지 한 번에 연습하세요.">
   <title>matchapizza | 티켓팅 리허설</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=venues-live-1">
+  <link rel="stylesheet" href="./venues.css?v=venues-live-1">
+  <link rel="stylesheet" href="./seat-view.css?v=venues-live-1">
+  <link rel="stylesheet" href="./community.css?v=venues-live-1">
 </head>
 <body>
   <header class="site-header">
@@ -15,13 +18,17 @@
       <form class="search-form" id="search-form" role="search"><input id="search-input" name="q" type="search" placeholder="어떤 티켓팅을 연습할까요?" aria-label="공연 및 경기 검색" autocomplete="off"><button type="submit" aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></form>
       <div class="header-meta"><span class="practice-badge">연습 모드</span><div class="clock-box"><span class="clock-label">체험용 시계 · 기기 시간 기준</span><time class="clock-time" id="live-clock" aria-label="현재 기기 시간">00:00:00</time></div></div>
     </div>
-    <nav class="category-nav" aria-label="티켓 종류"><div class="category-inner"><button class="category-btn active" type="button" data-category="all">전체</button><button class="category-btn" type="button" data-category="concert">콘서트</button><button class="category-btn" type="button" data-category="baseball">스포츠</button><button class="category-btn" type="button" data-category="musical">뮤지컬</button><span class="nav-caption">처음이어도, 한 번 연습하면.</span></div></nav>
+    <nav class="category-nav" aria-label="티켓 종류"><div class="category-inner"><button class="category-btn active" type="button" data-category="all">전체</button><button class="category-btn" type="button" data-category="concert">콘서트</button><button class="category-btn" type="button" data-category="baseball">야구</button><button class="category-btn" type="button" data-category="football">축구</button><a class="category-community" href="#community-root">예매 커뮤니티 ↘</a><span class="nav-caption">처음이어도, 한 번 연습하면.</span></div></nav>
   </header>
   <main class="main-shell" id="app" tabindex="-1"></main>
-  <footer class="site-footer"><div class="footer-inner"><span class="footer-brand">matchapizza</span><p>티켓링크 UI를 참고한 비공식 체험용 프로토타입 · 실제 예매/결제 없음</p><p class="small">공연·경기·좌석·대기 정보는 모두 가상입니다. 이 사이트는 티켓링크와 제휴 관계가 없습니다.</p></div></footer>
+  <section class="main-shell community-shell" aria-label="실시간 예매 라운지"><div id="community-root"></div></section>
+  <footer class="site-footer"><div class="footer-inner"><span class="footer-brand">matchapizza</span><p>티켓링크 UI를 참고한 비공식 체험용 프로토타입 · 실제 예매/결제 없음</p><p class="small">실제 공연장 자료를 참고한 연습용 좌석도입니다. 행사·가격·잔여석·대기는 가상입니다. 이 사이트는 티켓링크와 제휴 관계가 없습니다.</p></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog class="confirm-dialog" id="exit-dialog" aria-labelledby="exit-title"><div class="dialog-body"><h2 id="exit-title">연습을 나갈까요?</h2><p>선택한 좌석과 연습 진행 내용이 초기화돼요.</p></div><div class="dialog-actions"><button class="btn btn-secondary" type="button" id="exit-cancel">계속 연습</button><button class="btn btn-primary" type="button" id="exit-confirm">나가기</button></div></dialog>
   <noscript><p style="padding:24px;text-align:center">이 티켓팅 연습은 JavaScript를 켠 브라우저에서 이용할 수 있어요.</p></noscript>
-  <script src="./app.js" defer></script>
+  <script src="./venues.js?v=venues-live-1" defer></script>
+  <script src="./seat-view.js?v=venues-live-1" defer></script>
+  <script src="./community.js?v=venues-live-1" defer></script>
+  <script src="./app.js?v=venues-live-1" defer></script>
 </body>
 </html>

@@ -772,3 +772,58 @@ button.event-card, .event-card > button { display: block; width: 100%; padding: 
   .header-meta .practice-badge { position: absolute; right: 0; bottom: 0; padding: 1px 5px; font-size: 7px; line-height: 1.4; }
   .search-form { margin-top: 10px; }
 }
+
+/* The open time stays fixed while the user practices refreshing to enter. */
+.opening-target { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 14px; margin: 22px auto 0; padding: 14px 18px; max-width: 390px; background: #f7f8fa; border: 1px solid var(--line); }
+.opening-target > span { color: #68727e; font-size: 12px; }
+.opening-target time { color: var(--ink); font-size: 24px; font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: .03em; }
+.opening-target small { color: #88909a; font-size: 10px; }
+.refresh-button { min-width: 190px; gap: 9px; }
+.refresh-button > span { font-size: 24px; line-height: 1; }
+.ready-card #opening-instruction { min-height: 2.8em; line-height: 1.7; }
+.ready-card.is-open #opening-instruction { color: var(--red); font-weight: 650; }
+.ready-card.is-open .state-tag { background: #fff0f0; color: var(--red); }
+@media (max-width: 560px) {
+ .opening-target { padding: 12px 8px; gap: 4px 8px; }
+ .opening-target > span { font-size: 11px; }
+ .opening-target time { font-size: 22px; }
+ .opening-target small { flex-basis: 100%; font-size: 9px; }
+ .refresh-button { min-width: 170px; }
+}
+
+/* Venue discovery and sightline tools. */
+.poster-football { background: #183b32; color: #e5f3b0; }
+.poster-football .poster-title { font-size: clamp(30px,4vw,59px); letter-spacing: -.06em; }
+.poster-football .poster-graphic { position:absolute; width:74%; height:48%; border:1px solid #a7d68c; border-radius:45%; bottom:-17%; left:13%; opacity:.65; transform:rotate(-24deg); }
+.poster-football .poster-graphic::before { content:''; position:absolute; border:1px solid #a7d68c; inset:14%; border-radius:45%; }
+.venue-tag { display:inline-block; color:#61736b; background:#f1f6f3; padding:4px 7px; margin-top:7px; font-size:11px; font-weight:600; }
+.feature-ribbon { display:flex; flex-wrap:wrap; gap:20px; padding:23px 26px; margin:30px 0 0; background:#f7f8fa; border:1px solid var(--line); font-size:13px; color:#495260; }
+.feature-ribbon > * { flex:1; display:flex; align-items:center; gap:10px; min-width:195px; }
+.feature-ribbon b { color:var(--red); }
+.feature-ribbon a { text-decoration:none; }
+.venue-preview-actions,.seat-view-bar { display:flex; gap:20px; align-items:center; justify-content:space-between; padding:18px 0 0; }
+.venue-preview-actions span { color:var(--muted); font-size:12px; }
+.seat-view-bar { margin-top:20px; padding:20px; border:1px solid #f0d6d6; background:#fff8f8; }
+.seat-view-bar strong { font-size:14px; }
+.seat-view-bar p { margin:7px 0 0; font-size:12px; color:#7a6464; }
+.seat-model-note { font-size:11px; line-height:1.7; color:var(--muted); }
+.seat-chip .chip-view { width:auto; padding:3px 6px; border-radius:4px; color:var(--red); background:white; font-size:11px; font-weight:750; }
+.community-shell { padding-top:0; padding-bottom:45px; scroll-margin-top:170px; }
+#community-root { scroll-margin-top:170px; }
+.zone-tabs { flex-wrap:wrap; }
+.zone-tab { flex:1 1 140px; }
+.price-reference { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 20px; }
+.price-reference > div { min-width:0; gap:12px; }
+@media(max-width:560px){
+ .feature-ribbon { gap:14px; padding:16px; font-size:12px; }
+ .feature-ribbon > * { min-width:100%; }
+ .venue-preview-actions,.seat-view-bar { align-items:stretch; flex-direction:column; gap:12px; }
+ .venue-preview-actions span { font-size:11px; }
+ .seat-view-bar { padding:15px; }
+ .venue-tag { font-size:9px; }
+ .zone-tab { flex-basis:110px; }
+ .price-reference { grid-template-columns:1fr; }
+ .community-shell { padding-top:0; }
+}
+
+.category-community{font-size:12px;color:#626c77;text-decoration:none;padding:20px 8px;white-space:nowrap}.category-community:hover{color:var(--red)}@media(max-width:560px){.category-community{font-size:10px;padding:13px 6px;margin-left:auto}.category-inner{gap:4px}}

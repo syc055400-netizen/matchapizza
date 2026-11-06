@@ -1,0 +1,59 @@
+.mv-overview { border:1px solid #e4e7eb;border-radius:12px;background:#fff;overflow:hidden;margin-bottom:20px;color:#27323d; }
+.mv-heading { display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px 8px; }
+.mv-heading h3 { font-size:19px;margin:4px 0 5px;letter-spacing:-.6px; }
+.mv-heading p { color:#737b85;font-size:12px;line-height:1.6;margin:0; }
+.mv-kicker { font-size:10px;letter-spacing:1.2px;font-weight:750;color:#e94b58; }
+.mv-source-link { flex-shrink:0;font-size:12px;text-decoration:none;color:#596570;border:1px solid #dde2e7;padding:8px 10px;border-radius:5px; }
+.mv-source-link:hover { color:#d22c40;border-color:#edb4bd; }
+.mv-schematic { position:relative;width:min(100%,550px);aspect-ratio:500/300;margin:6px auto 0; }
+.mv-schematic svg { display:block;width:100%;height:100%; }
+.mv-baseball { aspect-ratio:500/340; }
+.mv-terrace { fill:#f0f2f5;stroke:#d5dbe1;stroke-width:1.5; }
+.mv-upper { fill:#e8edf2; }
+.mv-svg-note { fill:#6e7f72;font-size:12px;font-family:inherit; }
+.mv-zone { position:absolute;left:var(--mv-x);top:var(--mv-y);transform:translate(-50%,-50%);min-width:56px;min-height:37px;padding:7px 10px;font-family:inherit;font-size:12px;font-weight:700;line-height:1.2;color:#4e5c68;background:white;border:1px solid #c8d0d8;border-radius:7px;cursor:pointer;box-shadow:0 2px 4px #23344708;transition:background .12s,border-color .12s,color .12s; }
+.mv-hall .mv-zone { min-width:150px;min-height:45px; }
+.mv-zone:hover { border-color:#e94b58;color:#cf3649; }
+.mv-zone.is-selected { background:#e94b58;border-color:#e94b58;color:white;box-shadow:0 3px 9px #e94b5828; }
+.mv-zone:focus-visible { outline:3px solid #1b69b7;outline-offset:3px; }
+.mv-selection { display:flex;justify-content:center;align-items:center;gap:12px;margin:8px 20px 0;padding:11px 10px;border-radius:7px;background:#faf6f7;font-size:12px; }
+.mv-selection span { color:#8b737a; }
+.mv-selection strong { color:#bc3445;font-size:14px; }
+.mv-map-note { margin:12px 22px 14px;color:#78818b;font-size:12px;line-height:1.65; }
+.mv-official-map { margin:0 20px 15px;border:1px solid #e2e6ea;border-radius:7px; }
+.mv-official-map summary { padding:12px 14px;cursor:pointer;font-size:13px;font-weight:650; }
+.mv-official-map summary span { margin-left:6px;font-size:10px;font-weight:500;color:#9299a1; }
+.mv-official-map[open] summary { border-bottom:1px solid #e8ebee; }
+.mv-map-image-wrap { padding:12px;background:#fff; }
+.mv-official-image { display:block;width:100%;height:auto;max-height:680px;object-fit:contain; }
+.mv-official-image[hidden] { display:none; }
+.mv-image-fallback { font-size:12px;line-height:1.7;padding:20px 10px;text-align:center; }
+.mv-image-fallback a,.mv-credit a { color:#b4384a; }
+.mv-credit { padding:0 14px 12px;margin:0;color:#8b939b;font-size:10px;line-height:1.65; }
+.mv-practice-note { padding:12px 20px;margin:0;background:#f8f9fa;border-top:1px solid #eceef1;font-size:11px;line-height:1.65;color:#7d8791; }
+@media(max-width:600px) {
+ .mv-heading { padding:16px 15px 8px;gap:9px;align-items:flex-start; }
+ .mv-heading h3 { font-size:17px; }
+ .mv-heading p { font-size:11px; }
+ .mv-source-link { font-size:10px;padding:7px; }
+ .mv-zone { min-width:45px;min-height:33px;padding:5px 6px;font-size:11px; }
+ .mv-hall .mv-zone { min-width:115px;min-height:38px; }
+ .mv-selection { margin:8px 12px 0;gap:8px;font-size:11px; }
+ .mv-selection strong { font-size:13px; }
+ .mv-map-note { margin:10px 15px 12px;font-size:11px; }
+ .mv-official-map { margin:0 12px 12px; }
+ .mv-practice-note { padding:11px 15px; }
+}
+/* Locally preserved source maps are the primary venue overviews. */
+.mv-source-map.mv-baseball { width:min(100%,420px);aspect-ratio:377/555;margin-top:15px; }
+.mv-source-map.mv-football { width:min(100%,560px);aspect-ratio:591/473;margin-top:15px; }
+.mv-primary-image { display:block;width:100%;height:100%;object-fit:contain; }
+.mv-source-map.mv-baseball .mv-map-anchor { min-width:23px;width:23px;min-height:23px;height:23px;padding:0;border-radius:50%;font-size:8px;font-weight:800;border:2px solid #fff;background:#fff;color:#263442;box-shadow:0 0 0 1px #4b5665,0 2px 4px #17233430; }
+.mv-source-map.mv-baseball .mv-map-anchor:hover,.mv-source-map.mv-baseball .mv-map-anchor.is-selected { color:#fff;background:#e94b58;box-shadow:0 0 0 2px #e94b58,0 2px 6px #17233430;z-index:2; }
+.mv-source-map.mv-football .mv-map-anchor { min-width:58px;min-height:34px;padding:6px 8px;background:#fff;color:#2d3745;box-shadow:0 2px 8px #18293630; }
+.mv-source-map.mv-football .mv-map-anchor.is-selected { background:#e94b58;color:#fff; }
+.mv-primary-credit { text-align:center;padding:12px 18px 3px; }
+@media(max-width:400px) {
+ .mv-source-map.mv-baseball .mv-map-anchor { min-width:20px;width:20px;min-height:20px;height:20px;font-size:7px; }
+ .mv-source-map.mv-football .mv-map-anchor { min-width:49px;min-height:30px;padding:5px;font-size:10px; }
+}

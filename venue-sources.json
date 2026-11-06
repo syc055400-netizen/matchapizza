@@ -1,0 +1,194 @@
+{
+  "verifiedAt": "2026-11-06",
+  "purpose": "모의 예매용 공연장 구조 참조. 운영사 확인 사실과 시뮬레이션 추정치를 분리한다.",
+  "venues": [
+    {
+      "id": "yes24",
+      "name": "YES24 LIVE HALL",
+      "officialPage": "https://www.yes24livehall.com/",
+      "sources": [
+        {
+          "url": "https://company.yes24.com/pdf/2026_YES24_%ED%9A%8C%EC%82%AC%EC%86%8C%EA%B0%9C%EC%84%9C.pdf",
+          "title": "2026 YES24 회사소개서",
+          "page": 23,
+          "sourceRef": "turn21view0",
+          "facts": {
+            "firstFloorStandingCapacity": 1700,
+            "firstFloorReservedCapacity": 714,
+            "secondFloorReservedCapacity": 337
+          }
+        }
+      ],
+      "geometryConfidence": "층 구분과 정원만 공식 확인. 무대 크기/높이/좌석별 좌표/구역명은 아직 원도면 미검증.",
+      "eventLayoutNote": "1층은 스탠딩 또는 지정석 등 공연별 구성 확인이 필요하다.",
+      "asset": null
+    },
+    {
+      "id": "worldcup",
+      "name": "서울월드컵경기장",
+      "officialPage": "https://www.sisul.or.kr/open_content/worldcup/guidance/mainst_seat.jsp",
+      "sources": [
+        {
+          "url": "https://www.sisul.or.kr/open_content/worldcup/guidance/mainst_seat.jsp",
+          "title": "서울시설공단 주경기장 좌석안내",
+          "sourceRef": "turn8view0",
+          "facts": {
+            "seatSearchInputs": [
+              "방향",
+              "구역",
+              "번호"
+            ]
+          }
+        },
+        {
+          "url": "https://www.sisul.or.kr/open_content/worldcup/guidance/mainst.jsp",
+          "title": "서울시설공단 주경기장 이용안내",
+          "sourceRef": "turn11view2",
+          "facts": {
+            "capacity": 66704,
+            "pitchMeters": [
+              105,
+              68
+            ],
+            "grassMeters": [
+              117,
+              78
+            ],
+            "buildingFloorsAboveGround": 6
+          }
+        },
+        {
+          "url": "https://www.gcyf.or.kr/data/file/notice/3547819810_nwk1RMmu_ca2fc98c3ad2135f3193341ae04928916ca2bc4d.pdf",
+          "title": "고양시청소년재단 2025 Re-Boost 축구 경기 관람안내",
+          "page": 2,
+          "sourceRef": "turn31view0",
+          "facts": {
+            "mapOrientation": "도면상 동측=위,서측=아래,북측=왼쪽,남측=오른쪽",
+            "mapYear": 2025
+          }
+        }
+      ],
+      "asset": {
+        "url": "https://www.gcyf.or.kr/data/file/notice/3547819810_nwk1RMmu_ca2fc98c3ad2135f3193341ae04928916ca2bc4d.pdf",
+        "localPath": "venue-worldcup.jpg",
+        "type": "image/jpeg",
+        "retrievedLocally": true,
+        "visuallyInspected": true,
+        "extraction": "PDF 2페이지에 내장된591×473JPEG를 수정 없이 추출",
+        "dateScope": "2025 안내자료;2026최신운영사배치도로 주장하지 않음",
+        "source": "고양시청소년재단 공식 경기관람안내에 수록된 FC서울 좌석도",
+        "licenseNote": "출처표시. 공공누리 라이선스로 단정하지 않음."
+      },
+      "geometryConfidence": "공식 평면도 URL 및 필드 치수 확인. 개별 구역 좌표/관람석 높이는 미검증.",
+      "eventLayoutNote": "축구 기본 평면도. 공연의 무대·플로어석 구성은 행사별 예매처 좌석도가 별도로 필요하다."
+    },
+    {
+      "id": "gocheok",
+      "name": "고척스카이돔",
+      "officialPage": "https://www.sisul.or.kr/open_content/skydome/introduce/seat.jsp",
+      "sources": [
+        {
+          "url": "https://www.sisul.or.kr/open_content/skydome/introduce/seat.jsp",
+          "title": "서울시설공단 고척스카이돔 좌석배치도",
+          "sourceRef": "turn11view1",
+          "facts": {
+            "infieldSections": {
+              "lower1": [
+                101,
+                114
+              ],
+              "lower2": [
+                201,
+                210
+              ],
+              "upper3": [
+                301,
+                322
+              ],
+              "upper4": [
+                401,
+                424
+              ]
+            },
+            "outfieldSections": {
+              "lower1": [
+                115,
+                132
+              ],
+              "lower2": [
+                211,
+                222
+              ],
+              "upper3": [
+                323,
+                334
+              ],
+              "upper4": [
+                425,
+                435
+              ]
+            },
+            "tableSections": [
+              "T01–T07",
+              "T11–T17"
+            ],
+            "skyboxes": "S01–S16",
+            "orientation": "공식 도면 상단 외야측 입구/하단 내야측 입구. 내야 우측하단부터 시계방향으로 각 층 구역번호 증가."
+          }
+        },
+        {
+          "url": "https://www.sisul.or.kr/open_content/skydome/introduce/facility.jsp",
+          "title": "서울시설공단 고척스카이돔 시설현황",
+          "sourceRef": "turn10view2",
+          "facts": {
+            "capacity": 16601,
+            "floorsBelowGround": 2,
+            "floorsAboveGround": 4
+          }
+        },
+        {
+          "url": "https://www.data.go.kr/catalog/15118835/fileData.json",
+          "title": "서울시설공단_고척스카이돔 좌석 배치도 공공데이터 메타데이터",
+          "sourceRef": "turn9search0",
+          "facts": {
+            "format": "JPG",
+            "updated": "2026-07-09",
+            "license": "이용허락범위 제한 없음",
+            "datasetPage": "https://www.data.go.kr/data/15118835/fileData.do"
+          }
+        },
+        {
+          "url": "https://heroesbaseball.co.kr/ticket/normal/viewCharge.do",
+          "title": "키움히어로즈 공식 일일티켓 2026시즌 입장요금",
+          "sourceRef": "turn28view1",
+          "facts": {
+            "officialMapUrl": "https://heroesbaseball.co.kr/html/front/web_2018/images/ticket/2025/dome00.png"
+          }
+        },
+        {
+          "url": "https://heroesbaseball.co.kr/heroes/stadium/skydome.do",
+          "title": "키움히어로즈 고척스카이돔 구장안내",
+          "sourceRef": "turn28view0",
+          "facts": {
+            "centerFenceMeters": 122,
+            "leftRightFenceMeters": 99,
+            "fenceHeightMeters": 4
+          }
+        }
+      ],
+      "asset": {
+        "url": "https://heroesbaseball.co.kr/html/front/web_2018/images/ticket/2025/dome00.png",
+        "localPath": "venue-gocheok.png",
+        "type": "image/png",
+        "sourceRef": "turn29view0",
+        "retrievedLocally": true,
+        "visuallyInspected": true,
+        "source": "키움히어로즈 공식 2026 입장요금 페이지가 연결한 전체 좌석도(이미지 경로는2025)",
+        "licenseNote": "공식 구단 좌석도. 출처표시: 키움히어로즈. 공공누리 라이선스로 단정하지 않음."
+      },
+      "geometryConfidence": "공식 배치도 alt text의 구역명·층별 범위·도면 방향 확인. 정밀 높이/좌석 좌표는 미검증.",
+      "eventLayoutNote": "야구 기본 평면도. 콘서트 무대 및 그라운드석은 행사별 배치가 달라진다."
+    }
+  ],
+  "threeDimensionalViewNote": "실측 도면과 좌석별 높이를 확보하지 않은 3D는 모의 시야로 표시한다. 실제 시야·거리·가림을 보증하거나 임의 정밀 수치를 표시하지 않는다."
+}
