@@ -1,0 +1,93 @@
+{
+  "venueId": "yes24",
+  "venueName": "YES24 LIVE HALL",
+  "checkedAt": "2026-11-06",
+  "purpose": "공식 실내 사진을 참고한 3D 모의 시야의 형태·색·무대 구성 개선. 사진 기반 참고이며 실측 모델이 아님.",
+  "architecturalObservations": [
+    "전면에 넓은 직사각형 무대가 있으며 객석 바닥보다 높다.",
+    "실내 벽, 무대 주변 커튼, 천장 설비는 전반적으로 어두운 검정 계열이다.",
+    "무대 양쪽에 세로로 매달린 검은 라인어레이 스피커가 보인다.",
+    "무대 위를 가로지르는 조명 바와 여러 개의 무대 조명이 보인다.",
+    "1층 바닥은 공연에 따라 스탠딩 또는 이동식 의자 배치로 운영된다.",
+    "공식 소개서에 2층 좌석이 확인되나, 확보한 사진만으로 전체 발코니 윤곽이나 정확한 경사는 확정할 수 없다."
+  ],
+  "limits": [
+    "사진의 정확한 촬영 좌석·열·카메라 높이는 공개되지 않았다.",
+    "행사별 LED 화면, 현수막, 의자 배치, 조명 색은 상설 시설로 취급하지 않는다.",
+    "2019년 북토크 사진은 당시 행사 배치를 보여 주며 현재 배치와 다를 수 있다.",
+    "무대 거리, 좌석 높이, 난간 높이 등 실측 수치는 사진에서 추정해 표시하지 않는다.",
+    "공식 공개 사진이며 저작권은 원출처에 있다. 사진에 포함된 채널예스 워터마크를 보존한다."
+  ],
+  "assets": [
+    {
+      "file": "photo-yes24-stage.jpg",
+      "sourcePage": "https://yes24stage.com/ko/about/yes24artone.php",
+      "photoUrl": "https://yes24stage.com/ko/common/img/bg/bg_content_bottom_link_ylh.jpg",
+      "attribution": "YES24 STAGE · YES24 LIVE HALL 공식 소개",
+      "caption": "스탠딩 공연의 무대와 객석 전경",
+      "photoDate": null,
+      "width": 2560,
+      "height": 480,
+      "cameraPosition": {
+        "knownExactPosition": false,
+        "description": "객석 뒤쪽에서 무대를 바라보는 전경. 정확한 층·열·좌석은 확인되지 않음."
+      },
+      "observations": [
+        "전면 직사각형 무대",
+        "좌우에 매달린 라인어레이 스피커",
+        "무대 위 조명 설비",
+        "스탠딩 객석"
+      ],
+      "displayNote": "공식 배너 원본의 보라색 그라데이션이 포함됨. 이 색을 실제 벽 색상으로 해석하지 않음."
+    },
+    {
+      "file": "photo-yes24-hall.jpg",
+      "sourcePage": "https://m.ch.yes24.com/article/details/38845",
+      "photoUrl": "https://image.yes24.com/images/chyes24/3/6/a/8/36a826539c467b2b8da5df8aeea44a5e.jpg",
+      "attribution": "채널예스 · 사진 예스24",
+      "caption": "2019년 북토크 당시 1층 객석에서 바라본 무대",
+      "sourceCaption": "행사가 끝난 뒤에도 자리를 뜨지 못하는 독자들",
+      "eventDate": "2019-05-15",
+      "publishedAt": "2019-05-17",
+      "width": 600,
+      "height": 400,
+      "cameraPosition": {
+        "knownExactPosition": false,
+        "description": "1층 이동식 의자 뒤쪽에서 정면 무대를 바라본 것으로 보임. 정확한 열·좌석은 확인되지 않음.",
+        "isVisualInference": true
+      },
+      "observations": [
+        "낮게 단차가 있는 검은 무대",
+        "어두운 벽과 무대 커튼",
+        "전면 가로 조명 바",
+        "무대 양쪽 매달린 스피커",
+        "이동식 접이식 의자 배치"
+      ],
+      "displayNote": "2019년 행사 사진. 화면 콘텐츠·의자·출연자 배치는 행사별 구성."
+    },
+    {
+      "file": "photo-yes24-audience.jpg",
+      "sourcePage": "https://m.ch.yes24.com/article/details/38845",
+      "photoUrl": "https://image.yes24.com/images/chyes24/9/d/7/9/9d799e1f94036975a9347de56a48c5a2.jpg",
+      "attribution": "채널예스 · 사진 예스24",
+      "caption": "2019년 북토크 당시 위쪽 사선에서 본 1층 객석과 무대",
+      "sourceCaption": "경청하는 독자들",
+      "eventDate": "2019-05-15",
+      "publishedAt": "2019-05-17",
+      "width": 600,
+      "height": 400,
+      "cameraPosition": {
+        "knownExactPosition": false,
+        "description": "1층 바닥보다 높은 위치에서 객석과 무대를 사선으로 내려다봄. 2층 좌석인지 별도 촬영 위치인지는 확인되지 않음.",
+        "isVisualInference": true
+      },
+      "observations": [
+        "무대와 평평한 객석 사이의 단차",
+        "무대 측면 계단",
+        "직사각형 객석 바닥에 이동식 의자 배치",
+        "어두운 측벽과 상부 가장자리 난간"
+      ],
+      "displayNote": "2019년 행사 사진. 무대 측면 계단 위치와 이동식 의자 배열은 당시 사진에서 확인되는 범위만 참고."
+    }
+  ]
+}

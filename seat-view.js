@@ -55,7 +55,8 @@
       const eye=(tier?17:1.6)+rowDepth*rise+1.6;
       return {position:[Math.sin(angle+offset)*xR,eye,Math.cos(angle+offset)*zR],row,number,tier};
     }
-    const angle=side==='outfield'?Math.PI:side==='first'?Math.PI*.32:side==='third'?-Math.PI*.32:0;
+    const outfieldAngle=String(options.zoneId)==='115'?Math.PI+.42:String(options.zoneId)==='132'?Math.PI-.42:Math.PI;
+    const angle=side==='outfield'?outfieldAngle:side==='first'?Math.PI*.32:side==='third'?-Math.PI*.32:0;
     const offset=(clamp(number,1,30)-15.5)*.012;
     const layer=clamp(tier,0,3),upper=layer>=2;
     // Official 1F/2F and 3F/4F sections occupy front/rear portions of the two
@@ -176,52 +177,104 @@
     return {shapes,labels,target:[0,.8,-8],overview:[164,145,170],background:['#dce5ed','#f6f8fa']};
   }
 
-  function close() { if(active){active.dialog.close();cleanup();} }
+  const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const safeURL=value=>{const text=String(value||'');return /^(https?:\/\/|[a-zA-Z0-9_.-]+(?:\/|$))/.test(text)?text:'';};
+  function close(){if(active){const dialog=active.dialog;cleanup();if(dialog.open)dialog.close();}}
   function cleanup(){
     if(!active)return;
-    cancelAnimationFrame(active.frame);active.observer?.disconnect();
-    const previous=active.previous;active.dialog.remove();active=null;
-    if(previous?.isConnected)previous.focus({preventScroll:true});
+    const state=active;active=null;
+    cancelAnimationFrame(state.frame);state.observer?.disconnect();
+    state.dialog.remove();document.body.style.overflow=state.bodyOverflow;
+    if(state.previous?.isConnected)state.previous.focus({preventScroll:true});
   }
-  function open(options={}) {
+  function open(options={}){
     close();
-    const venue=normalizeVenue(options.venueId),details=seatDetails(options,venue),scene=geometry(venue);
-    const dialog=document.createElement('dialog');
-    dialog.className='sv-dialog';dialog.setAttribute('aria-labelledby','sv-title');
-    dialog.innerHTML='<div class="sv-header"><div><p class="sv-eyebrow">SEAT VIEW</p><h2 id="sv-title">3D 좌석 시야</h2><p class="sv-seat-label"></p></div><button type="button" class="sv-close" aria-label="3D 시야 닫기">×</button></div><div class="sv-stage"><canvas class="sv-canvas" tabindex="0" role="img" aria-label="선택한 좌석에서 보는 3D 모의 시야. 드래그 또는 방향키로 둘러보고 더하기, 빼기로 확대와 축소할 수 있습니다."></canvas><span class="sv-view-badge">좌석에서 보기</span><span class="sv-drag-hint">드래그해서 둘러보기</span><div class="sv-compass" aria-hidden="true"><span>시선</span><i></i></div></div><div class="sv-toolbar"><div class="sv-mode-switch" aria-label="시점 선택"><button type="button" data-sv="seat" class="selected" aria-pressed="true">좌석 시야</button><button type="button" data-sv="overview" aria-pressed="false">전체 배치</button></div><div class="sv-zoom"><button type="button" data-sv="out" aria-label="시야 축소">−</button><span class="sv-zoom-value" aria-live="polite">1.0×</span><button type="button" data-sv="in" aria-label="시야 확대">+</button><button type="button" data-sv="reset" class="sv-reset">시점 초기화</button></div></div><p class="sv-disclaimer">3D 모의 시야 · 실제 시야와 다를 수 있어요</p><p class="sv-detail-note">공식 좌석 구역을 참고한 공간 모형입니다. 무대 구성·단차·난간·앞사람에 의한 가림은 재현하지 않습니다.</p>';
-    const rowLabel=options.row?` ${options.row}열`:'';
-    dialog.querySelector('.sv-seat-label').textContent=`${NAMES[venue]} · ${options.zoneLabel||options.zoneId||'선택 구역'}${rowLabel}${options.number?` ${options.number}번`:''}`;
-    document.body.appendChild(dialog);
-    const canvas=dialog.querySelector('canvas'),ctx=canvas.getContext('2d');
-    active={dialog,canvas,ctx,scene,venue,details,mode:'seat',yaw:0,pitch:0,fov:60,frame:0,pointers:new Map(),previous:document.activeElement,width:0,height:0};
-    if(!ctx){dialog.querySelector('.sv-stage').textContent='이 브라우저에서는 3D 시야를 표시할 수 없어요.';}
-    const updateControls=()=>{
-      if(!active)return;
-      dialog.querySelector('.sv-view-badge').textContent=active.mode==='seat'?'좌석에서 보기':'전체 배치 · 선택 위치 표시';
-      dialog.querySelectorAll('.sv-mode-switch button').forEach(button=>{const selected=button.dataset.sv===active.mode;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
-      dialog.querySelector('.sv-zoom-value').textContent=(Math.tan(Math.PI/6)/Math.tan(active.fov*Math.PI/360)).toFixed(1)+'×';
-      dialog.querySelector('.sv-compass i').style.transform=`rotate(${active.yaw*180/Math.PI}deg)`;
+    const venue=normalizeVenue(options.venueId);
+    const venueData=window.MatchaVenues?.get(venue)||{name:NAMES[venue],zones:[{id:options.zoneId||'1F',label:options.zoneLabel||'기본 구역',tier:options.tier||0,side:options.side||'center',x:50,y:65}]};
+    const photoData=window.MatchaVenuePhotos?.[venue]||{};
+    const photos=(photoData.photos||[]).filter(photo=>safeURL(photo.src));
+    const zones=venueData.zones||[],initialZone=zones.find(zone=>zone.id===String(options.zoneId))||zones[0];
+    const selection={...initialZone,...options,venueId:venue,zoneId:options.zoneId||initialZone?.id,zoneLabel:options.zoneLabel||initialZone?.label};
+    const details=seatDetails(selection,venue),scene=window.MatchaSeatGeometry?.make(venue)||geometry(venue);
+    const previous=document.activeElement,bodyOverflow=document.body.style.overflow;
+    const dialog=document.createElement('dialog');dialog.className='sv-dialog';dialog.setAttribute('aria-labelledby','sv-title');
+    const initialLabel=`${selection.zoneLabel||selection.zoneId}${options.row?` ${options.row}열`:''}${options.number?` ${options.number}번`:''}`;
+    const map=venueData.mapUrl?`<img class="sv-map-image" src="${escapeHTML(safeURL(venueData.mapUrl))}" alt="${escapeHTML(NAMES[venue])} 구역 배치도">`:`<svg viewBox="0 0 500 300" aria-hidden="true"><rect width="500" height="300" rx="10" fill="#f4f5f8"/><rect x="74" y="22" width="352" height="48" rx="5" fill="#313a47"/><text x="250" y="52" text-anchor="middle" font-size="17" fill="white">STAGE</text><rect x="90" y="92" width="320" height="80" rx="10" fill="#e0e5ed"/><rect x="70" y="200" width="360" height="60" rx="8" fill="#cdd6e3"/></svg>`;
+    dialog.innerHTML=`<header class="sv-header"><div class="sv-title-group"><span class="sv-eyebrow">MATCHAPIZZA · VENUE EXPLORER</span><h2 id="sv-title">${escapeHTML(NAMES[venue])}</h2><p class="sv-seat-label">공간을 먼저 둘러보고, 내 자리를 찾아보세요.</p></div><button type="button" class="sv-close" aria-label="공연장 탐색 닫기">×</button></header><div class="sv-explorer"><section class="sv-viewer" aria-label="공연장 시야"><nav class="sv-view-tabs" aria-label="보기 방식">${photos.length?'<button type="button" data-sv="photo">실제 사진</button>':''}<button type="button" data-sv="seat">3D 좌석 시야</button><button type="button" data-sv="overview">전체 배치</button></nav><div class="sv-stage"><canvas class="sv-canvas" tabindex="0" role="img" aria-label="3D 공연장 모형. 방향키 또는 드래그로 둘러보기, 더하기와 빼기로 확대 축소"></canvas><div class="sv-photo-surface" tabindex="0" role="img" aria-label="공연장 내부 참고 사진. 확대 후 드래그해서 사진을 이동할 수 있습니다." hidden><img class="sv-photo-image" alt="" draggable="false"></div><div class="sv-stage-top"><span class="sv-view-badge"></span><span class="sv-current-position"></span></div><div class="sv-photo-caption" hidden><strong class="sv-photo-title"></strong><p class="sv-photo-description"></p><div class="sv-photo-attribution"><a class="sv-photo-credit" target="_blank" rel="noopener noreferrer"></a><a class="sv-photo-license" target="_blank" rel="noopener noreferrer"></a></div></div><div class="sv-stage-bottom"><span class="sv-drag-hint">드래그해서 둘러보기</span><div class="sv-zoom"><button type="button" data-sv="out" aria-label="축소">−</button><span class="sv-zoom-value" aria-live="polite">1.0×</span><button type="button" data-sv="in" aria-label="확대">+</button><span class="sv-tool-divider"></span><button type="button" data-sv="reset" class="sv-reset" aria-label="시점 초기화">↺ <span>초기화</span></button></div></div><div class="sv-empty-state" hidden>이 사진을 불러오지 못했어요.<button type="button" data-sv="seat">3D 시야로 보기</button></div></div><div class="sv-view-footer"><p class="sv-disclaimer"></p><div class="sv-photo-gallery" aria-label="내부 사진 선택">${photos.map((photo,index)=>`<button type="button" data-photo="${index}" aria-label="${escapeHTML(photo.title||`내부 사진 ${index+1}`)}"><img src="${escapeHTML(safeURL(photo.thumbnail||photo.src))}" alt="" loading="lazy"></button>`).join('')}</div></div></section><aside class="sv-sidebar" aria-label="시야 탐색 설정"><div class="sv-panel-title"><span>SEAT FINDER</span><h3>어디서 볼까요?</h3><p>구역과 위치를 바꾸며 시야를 비교해 보세요.</p></div><div class="sv-booked"><span>${options.hasBookedSeat?'예매 선택 좌석':'처음 살펴본 위치'}</span><strong>${escapeHTML(initialLabel)}</strong></div><div class="sv-minimap">${map}${zones.map(zone=>`<button type="button" data-zone="${escapeHTML(zone.id)}" style="left:${Number(zone.x)||50}%;top:${Number(zone.y)||50}%" aria-label="${escapeHTML(zone.label)} 시야 탐색">${escapeHTML(zone.short||zone.id)}</button>`).join('')}</div><div class="sv-select-grid"><label>층<select class="sv-floor-select" aria-label="탐색할 층">${[...new Set(venue==='worldcup'?[0,1]:zones.map(zone=>zone.tier||0))].map(tier=>`<option value="${tier}">${tier+1}층</option>`).join('')}</select></label><label>구역<select class="sv-zone-select" aria-label="탐색할 구역"></select></label></div><fieldset class="sv-location-set"><legend>대표 열 위치</legend><div class="sv-location-buttons">${[[1,'앞쪽'],[4,'중간'],[7,'뒤쪽']].map(([row,label])=>`<button type="button" data-row="${row}">${label}</button>`).join('')}</div></fieldset><fieldset class="sv-location-set"><legend>구역 안 좌석 위치</legend><div class="sv-location-buttons">${[[4,'왼쪽'],[venue==='yes24'?10:15,'가운데'],[venue==='yes24'?17:26,'오른쪽']].map(([number,label])=>`<button type="button" data-number="${number}">${label}</button>`).join('')}</div></fieldset><div class="sv-exploring"><span class="sv-exploring-dot"></span><div><small>지금 둘러보는 위치</small><strong class="sv-exploring-label" aria-live="polite"></strong></div></div><p class="sv-explore-note">시야 탐색은 예매 좌석을 변경하지 않아요.<br>대표 열·좌석 위치는 연습용으로 구성했어요.</p><details class="sv-reference"><summary>사진과 3D 모형 안내 <span>+</span></summary><p>사진은 공연장 내부를 참고하는 자료로, 선택한 좌석에서 촬영한 사진이 아니에요. 3D는 사진과 공식 구역 정보를 참고한 모형이며, 실제 시야·무대 구성·가림은 달라질 수 있어요.</p>${(photoData.observations||[]).slice(0,3).map(text=>`<p class="sv-observation">${escapeHTML(text)}</p>`).join('')}${venueData.sourceUrl?`<a href="${escapeHTML(safeURL(venueData.sourceUrl))}" target="_blank" rel="noopener noreferrer">공식 공연장 안내 ↗</a>`:''}</details></aside></div>`;
+    document.body.appendChild(dialog);document.body.style.overflow='hidden';
+    const canvas=dialog.querySelector('canvas'),ctx=canvas.getContext('2d'),photoSurface=dialog.querySelector('.sv-photo-surface'),photoImage=dialog.querySelector('.sv-photo-image');
+    const initialMode=['seat','overview','photo'].includes(options.mode)?options.mode:photos.length?'photo':'seat';
+    const state=active={dialog,canvas,ctx,scene,venue,details,selection,mode:initialMode==='photo'&&!photos.length?'seat':initialMode,yaw:0,pitch:0,fov:60,frame:0,pointers:new Map(),previous,bodyOverflow,width:0,height:0,photos,photoIndex:clamp(Number.isInteger(options.photoIndex)?options.photoIndex:venue==='yes24'&&photos.length>1?1:0,0,Math.max(0,photos.length-1)),photoFailed:false,photoScale:1,photoX:0,photoY:0};
+    const current=()=>active===state;
+    const schedule=()=>{if(current()&&!state.frame)state.frame=requestAnimationFrame(()=>{if(current()){state.frame=0;if(state.mode!=='photo')draw();}});};
+    const rowName=()=>state.details.row<=2?'앞쪽':state.details.row<=5?'중간':'뒤쪽';
+    const positionName=()=>state.details.number<=(venue==='yes24'?6:8)?'왼쪽':state.details.number>=(venue==='yes24'?15:22)?'오른쪽':'가운데';
+    const transformPhoto=()=>{state.photoX=clamp(state.photoX,-state.width*(state.photoScale-1)/2,state.width*(state.photoScale-1)/2);state.photoY=clamp(state.photoY,-state.height*(state.photoScale-1)/2,state.height*(state.photoScale-1)/2);photoImage.style.transform=`translate(${state.photoX}px,${state.photoY}px) scale(${state.photoScale})`;};
+    const loadPhoto=()=>{
+      if(!photos.length)return;
+      const photo=photos[state.photoIndex];photoImage.src=safeURL(photo.src);photoImage.alt=photo.title||`${NAMES[venue]} 내부 참고 사진`;
+      dialog.querySelector('.sv-photo-title').textContent=photo.title||'공연장 내부';
+      dialog.querySelector('.sv-photo-description').textContent=photo.caption||'공간 구성과 분위기를 확인하는 참고 사진이에요.';
+      const credit=dialog.querySelector('.sv-photo-credit');credit.textContent=photo.credit||'사진 출처';credit.href=safeURL(photo.sourceUrl)||safeURL(photoData.sourceUrl)||'#';
+      const license=dialog.querySelector('.sv-photo-license');license.textContent=photo.license||'';license.href=safeURL(photo.licenseUrl)||credit.href;license.hidden=!photo.license;
+      dialog.querySelectorAll('[data-photo]').forEach(button=>{const selected=Number(button.dataset.photo)===state.photoIndex;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      state.photoFailed=false;dialog.querySelector('.sv-empty-state').hidden=true;state.photoScale=1;state.photoX=state.photoY=0;transformPhoto();
     };
-    const schedule=()=>{if(active&&!active.frame)active.frame=requestAnimationFrame(()=>{if(active){active.frame=0;draw();}});};
-    const zoom=delta=>{if(!active)return;active.fov=clamp(active.fov+delta,35,85);updateControls();schedule();};
+    const update=()=>{
+      if(!current())return;
+      const photoMode=state.mode==='photo';canvas.hidden=photoMode;photoSurface.hidden=!photoMode;dialog.querySelector('.sv-empty-state').hidden=!(photoMode&&state.photoFailed);
+      dialog.classList.toggle('sv-photo-mode',photoMode);dialog.querySelector('.sv-photo-caption').hidden=!photoMode;dialog.querySelector('.sv-photo-gallery').hidden=!photoMode;
+      dialog.querySelectorAll('.sv-view-tabs button').forEach(button=>{const selected=button.dataset.sv===state.mode;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      dialog.querySelector('.sv-view-badge').textContent=photoMode?'실제 내부 사진':state.mode==='overview'?'전체 배치':'3D 모의 시야';
+      dialog.querySelector('.sv-current-position').textContent=photoMode?'공간 참고 사진':`${state.selection.zoneLabel||state.selection.zoneId} · ${rowName()}`;
+      dialog.querySelector('.sv-drag-hint').textContent=photoMode?'확대 후 드래그로 사진 이동':'드래그해서 둘러보기';
+      dialog.querySelector('.sv-zoom-value').textContent=(photoMode?state.photoScale:Math.tan(Math.PI/6)/Math.tan(state.fov*Math.PI/360)).toFixed(1)+'×';
+      dialog.querySelector('.sv-disclaimer').textContent=photoMode?'선택 좌석에서 촬영한 사진이 아닌, 공연장 내부 참고 사진이에요.':'사진과 공식 구역 정보를 참고한 3D 모형 · 실제 시야와 다를 수 있어요.';
+      dialog.querySelector('.sv-floor-select').value=String(state.details.tier);
+      const floorZones=venue==='worldcup'?zones:zones.filter(zone=>(zone.tier||0)===state.details.tier);
+      const zoneSelect=dialog.querySelector('.sv-zone-select');zoneSelect.innerHTML=floorZones.map(zone=>`<option value="${escapeHTML(zone.id)}">${escapeHTML(zone.label)}</option>`).join('');zoneSelect.value=String(state.selection.zoneId);
+      dialog.querySelectorAll('[data-zone]').forEach(button=>{const selected=button.dataset.zone===String(state.selection.zoneId);button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      dialog.querySelectorAll('[data-row]').forEach(button=>{const selected=(Number(button.dataset.row)===1?'앞쪽':Number(button.dataset.row)===4?'중간':'뒤쪽')===rowName();button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      dialog.querySelectorAll('[data-number]').forEach(button=>{const n=Number(button.dataset.number),selected=(n===4?'왼쪽':n===(venue==='yes24'?10:15)?'가운데':'오른쪽')===positionName();button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      dialog.querySelector('.sv-exploring-label').textContent=`${state.selection.zoneLabel||state.selection.zoneId} · ${rowName()} ${positionName()}`;
+      transformPhoto();schedule();
+    };
+    const reset=()=>{state.yaw=state.pitch=0;state.fov=60;state.photoScale=1;state.photoX=state.photoY=0;update();};
+    const zoom=delta=>{if(!current())return;if(state.mode==='photo')state.photoScale=clamp(state.photoScale-delta*.035,1,3.5);else state.fov=clamp(state.fov+delta,35,85);update();};
+    const explore=patch=>{state.selection={...state.selection,...patch,seatPosition:undefined};state.details=seatDetails(state.selection,venue);state.mode='seat';state.yaw=state.pitch=0;state.fov=60;dialog.querySelector('.sv-empty-state').hidden=true;update();};
+    const selectZone=id=>{const zone=zones.find(item=>item.id===String(id));if(zone)explore({...zone,zoneId:zone.id,zoneLabel:zone.label,tier:venue==='worldcup'?state.details.tier:zone.tier});};
     dialog.querySelector('.sv-close').addEventListener('click',close);
-    dialog.addEventListener('close',()=>{if(active?.dialog===dialog)cleanup();},{once:true});
-    dialog.addEventListener('click',event=>{const action=event.target.closest('[data-sv]')?.dataset.sv;if(!action||!active)return;if(action==='seat'||action==='overview'){active.mode=action;active.yaw=0;active.pitch=0;active.fov=60;}else if(action==='reset'){active.yaw=0;active.pitch=0;active.fov=60;}else zoom(action==='in'?-7:7);updateControls();schedule();});
-    canvas.addEventListener('pointerdown',event=>{if(!active)return;active.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});canvas.setPointerCapture(event.pointerId);canvas.classList.add('dragging');canvas.focus({preventScroll:true});});
-    canvas.addEventListener('pointermove',event=>{
-      if(!active||!active.pointers.has(event.pointerId))return;
-      const previous=active.pointers.get(event.pointerId);
-      if(active.pointers.size===2){const other=[...active.pointers.entries()].find(([id])=>id!==event.pointerId)[1];const oldDistance=Math.hypot(previous.x-other.x,previous.y-other.y),distance=Math.hypot(event.clientX-other.x,event.clientY-other.y);zoom((oldDistance-distance)*.12);}
-      else{active.yaw=clamp(active.yaw-(event.clientX-previous.x)*.005,-1.3,1.3);active.pitch=clamp(active.pitch+(event.clientY-previous.y)*.004,-.65,.65);}
-      active.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});updateControls();schedule();
+    dialog.addEventListener('close',()=>{if(current())cleanup();},{once:true});
+    dialog.addEventListener('click',event=>{
+      const button=event.target.closest('button');if(!button||!current())return;
+      if(button.dataset.sv){const action=button.dataset.sv;if(['seat','overview','photo'].includes(action)){state.mode=action;dialog.querySelector('.sv-empty-state').hidden=true;reset();}else if(action==='reset')reset();else zoom(action==='in'?-6:6);}
+      if(button.dataset.zone)selectZone(button.dataset.zone);
+      if(button.dataset.row)explore({row:Number(button.dataset.row)});
+      if(button.dataset.number)explore({number:Number(button.dataset.number)});
+      if(button.dataset.photo!==undefined){state.photoIndex=Number(button.dataset.photo);state.mode='photo';loadPhoto();update();}
     });
-    const release=event=>{if(!active)return;active.pointers.delete(event.pointerId);if(!active.pointers.size)canvas.classList.remove('dragging');};
-    canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('lostpointercapture',release);
-    canvas.addEventListener('wheel',event=>{event.preventDefault();zoom(event.deltaY*.025);},{passive:false});
-    canvas.addEventListener('keydown',event=>{if(!active)return;const k=event.key;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0'].includes(k))return;event.preventDefault();if(k==='ArrowLeft')active.yaw+=.12;if(k==='ArrowRight')active.yaw-=.12;if(k==='ArrowUp')active.pitch+=.08;if(k==='ArrowDown')active.pitch-=.08;if(k==='+'||k==='=')zoom(-7);if(k==='-')zoom(7);if(k==='0'){active.yaw=0;active.pitch=0;active.fov=60;}active.yaw=clamp(active.yaw,-1.3,1.3);active.pitch=clamp(active.pitch,-.65,.65);updateControls();schedule();});
+    dialog.querySelector('.sv-floor-select').addEventListener('change',event=>{const tier=Number(event.target.value);if(venue==='worldcup')explore({tier});else{const zone=zones.find(item=>item.tier===tier&&item.side===state.selection.side)||zones.find(item=>item.tier===tier);if(zone)selectZone(zone.id);}});
+    dialog.querySelector('.sv-zone-select').addEventListener('change',event=>selectZone(event.target.value));
+    for(const surface of [canvas,photoSurface]){
+      surface.addEventListener('pointerdown',event=>{if(!current())return;state.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});surface.setPointerCapture(event.pointerId);surface.classList.add('dragging');surface.focus({preventScroll:true});});
+      surface.addEventListener('pointermove',event=>{
+        if(!current()||!state.pointers.has(event.pointerId))return;const before=state.pointers.get(event.pointerId);
+        if(state.pointers.size===2){const other=[...state.pointers.entries()].find(([id])=>id!==event.pointerId)[1],oldDistance=Math.hypot(before.x-other.x,before.y-other.y),distance=Math.hypot(event.clientX-other.x,event.clientY-other.y);zoom((oldDistance-distance)*.12);}
+        else if(state.mode==='photo'){state.photoX+=event.clientX-before.x;state.photoY+=event.clientY-before.y;transformPhoto();}
+        else{state.yaw=clamp(state.yaw-(event.clientX-before.x)*.005,-1.6,1.6);state.pitch=clamp(state.pitch+(event.clientY-before.y)*.004,-.75,.75);schedule();}
+        state.pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+      });
+      const release=event=>{state.pointers.delete(event.pointerId);if(!state.pointers.size)surface.classList.remove('dragging');};
+      for(const event of ['pointerup','pointercancel','lostpointercapture'])surface.addEventListener(event,release);
+      surface.addEventListener('wheel',event=>{event.preventDefault();zoom(event.deltaY*.025);},{passive:false});
+      surface.addEventListener('keydown',event=>{if(!current())return;const k=event.key;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0'].includes(k))return;event.preventDefault();if(k==='+'||k==='=')zoom(-6);else if(k==='-')zoom(6);else if(k==='0')reset();else if(state.mode==='photo'){if(k==='ArrowLeft')state.photoX+=35;if(k==='ArrowRight')state.photoX-=35;if(k==='ArrowUp')state.photoY+=35;if(k==='ArrowDown')state.photoY-=35;transformPhoto();}else{if(k==='ArrowLeft')state.yaw+=.12;if(k==='ArrowRight')state.yaw-=.12;if(k==='ArrowUp')state.pitch+=.08;if(k==='ArrowDown')state.pitch-=.08;state.yaw=clamp(state.yaw,-1.6,1.6);state.pitch=clamp(state.pitch,-.75,.75);schedule();}});
+    }
+    photoImage.addEventListener('error',()=>{if(current()){state.photoFailed=true;dialog.querySelector('.sv-empty-state').hidden=state.mode!=='photo';}});
+    photoImage.addEventListener('load',()=>{if(current()){state.photoFailed=false;dialog.querySelector('.sv-empty-state').hidden=true;}});
     dialog.showModal();
-    const resize=()=>{if(active?.dialog!==dialog)return;const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);active.width=rect.width;active.height=rect.height;canvas.width=Math.max(1,Math.round(rect.width*dpr));canvas.height=Math.max(1,Math.round(rect.height*dpr));ctx?.setTransform(dpr,0,0,dpr,0,0);schedule();};
-    active.observer=new ResizeObserver(resize);active.observer.observe(canvas);resize();canvas.focus({preventScroll:true});
+    const resize=()=>{if(!current())return;const rect=(state.mode==='photo'?photoSurface:dialog.querySelector('.sv-stage')).getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);state.width=rect.width;state.height=rect.height;canvas.width=Math.max(1,Math.round(rect.width*dpr));canvas.height=Math.max(1,Math.round(rect.height*dpr));ctx?.setTransform(dpr,0,0,dpr,0,0);transformPhoto();schedule();};
+    state.observer=new ResizeObserver(resize);state.observer.observe(dialog.querySelector('.sv-stage'));resize();loadPhoto();update();
+    (state.mode==='photo'?photoSurface:canvas).focus({preventScroll:true});
   }
 
   function draw(){
@@ -233,7 +286,7 @@
     const yaw=Math.atan2(base[0],base[2])+a.yaw,pitch=Math.asin(base[1])+a.pitch;
     const forward=[Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch)];
     const right=norm(cross(forward,[0,1,0])),up=cross(right,forward);
-    const focal=height/(2*Math.tan(a.fov*Math.PI/360));
+    const focal=Math.min(height,width*.72)/(2*Math.tan(a.fov*Math.PI/360));
     const toCamera=p=>{const rel=sub(p,camera);return [dot(rel,right),dot(rel,up),dot(rel,forward)];};
     const project=p=>[width/2+p[0]*focal/p[2],height*.49-p[1]*focal/p[2]];
     const near=.2;
@@ -245,6 +298,7 @@
     const gradient=ctx.createLinearGradient(0,0,0,height);gradient.addColorStop(0,scene.background[0]);gradient.addColorStop(1,scene.background[1]);ctx.fillStyle=gradient;ctx.fillRect(0,0,width,height);
     const rendered=[];
     for(const shape of scene.shapes){
+      if(a.mode==='overview'&&shape.roof)continue;
       const transformed=shape.points.map(toCamera);
       if(shape.line){
         for(let i=0;i<transformed.length-1;i++){

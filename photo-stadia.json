@@ -1,0 +1,72 @@
+{
+  "checkedAt": "2026-11-06",
+  "purpose": "실제 경기장 사진을 참고한 구조 모델링 및 출처를 표시한 참고 사진 갤러리. 특정 선택 좌석에서 촬영한 실사, 실측 3D 복원, 최신 공연 배치를 의미하지 않음.",
+  "gocheok": {
+    "name": "고척스카이돔",
+    "photos": [{
+      "file": "photo-gocheok-1.jpg",
+      "width": 720,
+      "height": 385,
+      "caption": "외야에서 바라본 고척스카이돔 내부 · 서울시설공단 · 2015",
+      "sourceName": "서울시설공단",
+      "sourceUrl": "https://sisul.or.kr/open_content/skydome/guidance/dome.jsp",
+      "imageUrl": "https://sports.seoul.go.kr/file/view/FID00002193/1.do",
+      "mirrorPage": "https://commons.wikimedia.org/wiki/File:Gocheok_Sky_Dome_interior.jpg",
+      "author": "서울시설공단 (Seoul Metropolitan Facilities Management Corporation)",
+      "year": "2015",
+      "license": "공공누리 제1유형 / KOGL Type 1 (출처표시)",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "verification": "서울시 생활체육포털에서 받은 사진의 SHA-1이 공공누리1유형 Commons 원본과 일치: 4f415fa8b1078f7e7fb35785e5ff4b49ea4d2397",
+      "cameraLocation": "외야에서 내야 방향. 정확한 구역·열·좌석 번호는 미확인.",
+      "selectedSeatPhoto": false,
+      "is360Panorama": false,
+      "changes": "없음"
+    }],
+    "observations": [
+      "흰색 반투명 곡면 지붕이 경기장을 완전히 덮으며 회색 철골 격자와 트러스가 촘촘하게 보인다.",
+      "밝은 회청색 관람석이 내야를 둘러싸고 상하 티어 사이 통로가 구분된다.",
+      "녹색 야구장과 갈색 다이아몬드, 외야 가장자리의 붉은 통로가 보인다.",
+      "공식 서울시 반대방향 참고사진에서는 외야 중앙 검은 타자시야벽과 중앙·좌우 전광판이 확인된다."
+    ],
+    "architectureSources": [
+      "https://sisul.or.kr/open_content/skydome/introduce/intro.jsp",
+      "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1451"
+    ],
+    "limitations": ["2015년 사진이며 이후 리모델링이나 공연별 무대·좌석 배치는 반영되지 않음", "평면 일반사진이며 좌석별 시야를 입증하지 않음"]
+  },
+  "worldcup": {
+    "name": "서울월드컵경기장",
+    "photos": [{
+      "file": "photo-worldcup-1.jpg",
+      "thumbnail": "photo-worldcup-thumb.jpg",
+      "thumbnailNote": "Wikimedia Commons에서 제공하는 1280px 축소본. 원본 화면비 유지, 내용 변경 없음.",
+      "width": 8668,
+      "height": 3114,
+      "caption": "서울월드컵경기장 내부 파노라마 · JukoFF · 2018.12.07",
+      "sourceName": "Wikimedia Commons",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seoul_World_Cup_Stadium_(2018)_07.jpg",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/85/Seoul_World_Cup_Stadium_%282018%29_07.jpg",
+      "author": "JukoFF",
+      "year": "2018",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "cameraLocation": "관람석 통로 아래에서 내부를 촬영. 원본 위치정보와 EXIF 좌표가 서로 다르므로 특정 구역·열·좌석으로 연결하지 않음.",
+      "selectedSeatPhoto": false,
+      "is360Panorama": false,
+      "changes": "없음",
+      "note": "잔디 보호덮개가 깔린 겨울철 촬영 사진. 일반 내부 구조 참고용."
+    }],
+    "observations": [
+      "회색 관람석의 두 큰 티어 사이에 경기장을 두르는 순환통로가 있다.",
+      "흰색 또는 크림색 막지붕과 검은 방사형 철골이 관람석을 덮고, 중앙에는 큰 하늘 개구부가 있다.",
+      "직사각형 축구장 주위를 관람석이 둘러싸며 육상 트랙은 없다.",
+      "골대 뒤쪽 관람석 상부에 큰 직사각형 전광판이 보인다."
+    ],
+    "architectureSources": [
+      "https://sisul.or.kr/open_content/worldcup/guidance/mainst.jsp",
+      "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=913"
+    ],
+    "verifiedDimensions": {"touchlineLengthM": 105, "touchlineWidthM": 68, "grassLengthM": 117, "grassWidthM": 78, "sourceUrl": "https://sisul.or.kr/open_content/worldcup/guidance/mainst.jsp"},
+    "limitations": ["2018년 일반 내부 파노라마이며 360도 구면 이미지가 아님", "행사 무대 위치와 선택 좌석 시야는 별도 검증 필요"]
+  }
+}

@@ -57,3 +57,27 @@
 - [티켓링크 공식 구매 가이드](https://ticketlink.dn.toastoven.net/web/event/popup_guide_en/popup_guide_en/popup_guide_en.html)
 
 이 프로젝트는 티켓링크의 공식 서비스가 아닙니다.
+
+## 사진 기반 좌석 탐색 (2026-11-06)
+
+홈의 공연장 카드와 상세 페이지에서 실제 내부 사진을 먼저 둘러보고, 같은 창의 구역 선택과 3D 시야로 이동합니다. 좌석 탐색은 예매 연습에서 선택한 좌석을 변경하지 않습니다.
+
+- **실제 사진:** 원본 평면 사진을 확대하고 이동합니다. 구면 360도 사진처럼 감싸지 않습니다. 촬영 위치가 알려지지 않은 사진을 임의의 선택 좌석에 연결하지 않습니다.
+- **3D 시야:** 공개 사진에서 확인되는 벽·무대·지붕·철골·관람석의 특징을 참고한 공간 모형입니다. 구역과 앞/중간/뒤쪽 시점 등을 변경하며 비교합니다.
+- **전체 배치:** 선택 위치와 공연장 구조를 함께 확인하는 모형입니다.
+- 좌석별 실측 시야, 최신 시설 상태, 공연별 무대 구성, 난간·앞사람의 가림을 보증하지 않습니다. 사진의 촬영연도와 출처는 화면과 메타데이터에 표시합니다.
+- UX 참고: [세종문화회관 공식 좌석배치도와 무대 시각선](https://www.sejongpac.or.kr/portal/main/contents.do?menuNo=200368)의 층·구역·대표 좌석 탐색 방식. 해당 기관의 사진이나 VR 자산은 복제하지 않았습니다.
+
+### 사진 출처
+
+| 파일 | 출처 / 저작자 | 촬영 및 이용 정보 |
+| --- | --- | --- |
+| `photo-gocheok-1.jpg` | [서울시설공단](https://sisul.or.kr/open_content/skydome/guidance/dome.jsp) | 2015년 · [공공누리 제1유형](https://www.kogl.or.kr/info/licenseType1.do) · 변경 없음 |
+| `photo-worldcup-1.jpg` | [JukoFF / Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Seoul_World_Cup_Stadium_(2018)_07.jpg) | 2018-12-07 · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) · 변경 없음 |
+| `photo-worldcup-thumb.jpg` | 같은 Commons 사진의 제공 축소본 | 1280px · CC BY-SA 4.0 유지 · 내용 변경 없음 |
+| `photo-yes24-stage.jpg` | [YES24 STAGE 공식 소개](https://yes24stage.com/ko/about/yes24artone.php) | 촬영일 미공개 · 사진 © 예스24 · 출처와 함께 구조 참고용으로 표시 |
+| `photo-yes24-hall.jpg`, `photo-yes24-audience.jpg` | [채널예스 현장 기사](https://m.ch.yes24.com/article/details/38845) · 사진 예스24 | 2019-05-15 북토크 · 사진 © 예스24 · 원본 워터마크 유지 |
+
+사진의 라이선스는 해당 사진에만 적용되며 다른 코드와 자료의 이용허락을 뜻하지 않습니다. 사진·좌석 배치도의 저작권과 상표는 각 원권리자에게 있습니다. 상암 사진은 겨울 잔디 보호덮개가 있는 전경이며, 선택 좌석에서 찍은 사진이 아닙니다.
+
+새 파일: `venue-photos.js`(화면용 출처 데이터), `photo-stadia.json` / `photo-yes24.json`(검증 기록), `seat-scene.js`(사진 참고 공간 모형).
