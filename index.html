@@ -6,11 +6,12 @@
   <meta name="theme-color" content="#fa2828">
   <meta name="description" content="공연부터 야구까지, 내 좌석을 고르는 티켓팅 리허설. 대기부터 모의결제까지 한 번에 연습하세요.">
   <title>matchapizza | 티켓팅 리허설</title>
-  <link rel="stylesheet" href="./styles.css?v=checkout-4">
-  <link rel="stylesheet" href="./venues.css?v=checkout-4">
-  <link rel="stylesheet" href="./seat-view.css?v=checkout-4">
-  <link rel="stylesheet" href="./payment.css?v=checkout-4">
-  <link rel="stylesheet" href="./community.css?v=checkout-4">
+  <link rel="stylesheet" href="./styles.css?v=detail-5">
+  <link rel="stylesheet" href="./venues.css?v=detail-5">
+  <link rel="stylesheet" href="./seat-view.css?v=detail-5">
+  <link rel="stylesheet" href="./event-detail.css?v=detail-5">
+  <link rel="stylesheet" href="./payment.css?v=detail-5">
+  <link rel="stylesheet" href="./community.css?v=detail-5">
 </head>
 <body>
   <header class="site-header">
@@ -26,14 +27,16 @@
   <footer class="site-footer"><div class="footer-inner"><span class="footer-brand">matchapizza</span><p>티켓링크 UI를 참고한 비공식 체험용 프로토타입 · 실제 예매/결제 없음</p><p class="small">실제 공연장 자료를 참고한 연습용 좌석도입니다. 행사·가격·잔여석·대기는 가상입니다. 이 사이트는 티켓링크와 제휴 관계가 없습니다.</p></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog class="confirm-dialog" id="exit-dialog" aria-labelledby="exit-title"><div class="dialog-body"><h2 id="exit-title">연습을 나갈까요?</h2><p>선택한 좌석과 연습 진행 내용이 초기화돼요.</p></div><div class="dialog-actions"><button class="btn btn-secondary" type="button" id="exit-cancel">계속 연습</button><button class="btn btn-primary" type="button" id="exit-confirm">나가기</button></div></dialog>
+  <dialog class="detail-booking-dialog" id="detail-booking-dialog" aria-labelledby="detail-booking-title"></dialog>
   <noscript><p style="padding:24px;text-align:center">이 티켓팅 연습은 JavaScript를 켠 브라우저에서 이용할 수 있어요.</p></noscript>
-  <script src="./venues.js?v=checkout-4" defer></script>
-  <script src="./venue-photos.js?v=checkout-4" defer></script>
-  <script src="./seat-scene.js?v=checkout-4" defer></script>
-  <script src="./panorama.js?v=checkout-4" defer></script>
-  <script src="./seat-view.js?v=checkout-4" defer></script>
-  <script src="./community.js?v=checkout-4" defer></script>
-  <script src="./payment.js?v=checkout-4" defer></script>
-  <script src="./app.js?v=checkout-4" defer></script>
+  <script src="./venues.js?v=detail-5" defer></script>
+  <script src="./venue-photos.js?v=detail-5" defer></script>
+  <script src="./seat-scene.js?v=detail-5" defer></script>
+  <script src="./panorama.js?v=detail-5" defer></script>
+  <script src="./seat-view.js?v=detail-5" defer></script>
+  <script src="./community.js?v=detail-5" defer></script>
+  <script src="./payment.js?v=detail-5" defer></script>
+  <script src="./event-detail.js?v=detail-5" defer></script>
+  <script src="./app.js?v=detail-5" defer></script>
 </body>
 </html>
