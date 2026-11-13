@@ -1,4 +1,4 @@
-/* Original schematic 3D geometry for seat-view practice. No external assets or tracking. */
+/* Venue photos, official external VR players, and schematic seat-view practice. */
 (function () {
   'use strict';
   const NAMES = { yes24:'YES24 LIVE HALL', worldcup:'서울월드컵경기장', gocheok:'고척스카이돔' };
@@ -179,11 +179,12 @@
 
   const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const safeURL=value=>{const text=String(value||'');return /^(https?:\/\/|[a-zA-Z0-9_.-]+(?:\/|$))/.test(text)?text:'';};
+  const safeExternalURL=value=>{try{const url=new URL(String(value||''));return url.protocol==='https:'?url.href:'';}catch{return '';}};
   function close(){if(active){const dialog=active.dialog;cleanup();if(dialog.open)dialog.close();}}
   function cleanup(){
     if(!active)return;
     const state=active;active=null;
-    cancelAnimationFrame(state.frame);state.observer?.disconnect();
+    cancelAnimationFrame(state.frame);clearTimeout(state.vrTimer);state.panoramaView?.destroy();state.observer?.disconnect();
     state.dialog.remove();document.body.style.overflow=state.bodyOverflow;
     if(state.previous?.isConnected)state.previous.focus({preventScroll:true});
   }
@@ -193,6 +194,10 @@
     const venueData=window.MatchaVenues?.get(venue)||{name:NAMES[venue],zones:[{id:options.zoneId||'1F',label:options.zoneLabel||'기본 구역',tier:options.tier||0,side:options.side||'center',x:50,y:65}]};
     const photoData=window.MatchaVenuePhotos?.[venue]||{};
     const photos=(photoData.photos||[]).filter(photo=>safeURL(photo.src));
+    const vr=photoData.vr&&safeExternalURL(photoData.vr.embedUrl)?photoData.vr:null;
+    const panorama=photoData.panorama&&safeURL(photoData.panorama.src)?photoData.panorama:null;
+    const viewpoints=vr?(vr.viewpoints||[]).filter(point=>safeExternalURL(point.embedUrl)):[];
+    const seatPhotoLinks=(photoData.seatPhotoLinks||[]).filter(link=>safeExternalURL(link.url));
     const zones=venueData.zones||[],initialZone=zones.find(zone=>zone.id===String(options.zoneId))||zones[0];
     const selection={...initialZone,...options,venueId:venue,zoneId:options.zoneId||initialZone?.id,zoneLabel:options.zoneLabel||initialZone?.label};
     const details=seatDetails(selection,venue),scene=window.MatchaSeatGeometry?.make(venue)||geometry(venue);
@@ -200,13 +205,34 @@
     const dialog=document.createElement('dialog');dialog.className='sv-dialog';dialog.setAttribute('aria-labelledby','sv-title');
     const initialLabel=`${selection.zoneLabel||selection.zoneId}${options.row?` ${options.row}열`:''}${options.number?` ${options.number}번`:''}`;
     const map=venueData.mapUrl?`<img class="sv-map-image" src="${escapeHTML(safeURL(venueData.mapUrl))}" alt="${escapeHTML(NAMES[venue])} 구역 배치도">`:`<svg viewBox="0 0 500 300" aria-hidden="true"><rect width="500" height="300" rx="10" fill="#f4f5f8"/><rect x="74" y="22" width="352" height="48" rx="5" fill="#313a47"/><text x="250" y="52" text-anchor="middle" font-size="17" fill="white">STAGE</text><rect x="90" y="92" width="320" height="80" rx="10" fill="#e0e5ed"/><rect x="70" y="200" width="360" height="60" rx="8" fill="#cdd6e3"/></svg>`;
-    dialog.innerHTML=`<header class="sv-header"><div class="sv-title-group"><span class="sv-eyebrow">MATCHAPIZZA · VENUE EXPLORER</span><h2 id="sv-title">${escapeHTML(NAMES[venue])}</h2><p class="sv-seat-label">공간을 먼저 둘러보고, 내 자리를 찾아보세요.</p></div><button type="button" class="sv-close" aria-label="공연장 탐색 닫기">×</button></header><div class="sv-explorer"><section class="sv-viewer" aria-label="공연장 시야"><nav class="sv-view-tabs" aria-label="보기 방식">${photos.length?'<button type="button" data-sv="photo">실제 사진</button>':''}<button type="button" data-sv="seat">3D 좌석 시야</button><button type="button" data-sv="overview">전체 배치</button></nav><div class="sv-stage"><canvas class="sv-canvas" tabindex="0" role="img" aria-label="3D 공연장 모형. 방향키 또는 드래그로 둘러보기, 더하기와 빼기로 확대 축소"></canvas><div class="sv-photo-surface" tabindex="0" role="img" aria-label="공연장 내부 참고 사진. 확대 후 드래그해서 사진을 이동할 수 있습니다." hidden><img class="sv-photo-image" alt="" draggable="false"></div><div class="sv-stage-top"><span class="sv-view-badge"></span><span class="sv-current-position"></span></div><div class="sv-photo-caption" hidden><strong class="sv-photo-title"></strong><p class="sv-photo-description"></p><div class="sv-photo-attribution"><a class="sv-photo-credit" target="_blank" rel="noopener noreferrer"></a><a class="sv-photo-license" target="_blank" rel="noopener noreferrer"></a></div></div><div class="sv-stage-bottom"><span class="sv-drag-hint">드래그해서 둘러보기</span><div class="sv-zoom"><button type="button" data-sv="out" aria-label="축소">−</button><span class="sv-zoom-value" aria-live="polite">1.0×</span><button type="button" data-sv="in" aria-label="확대">+</button><span class="sv-tool-divider"></span><button type="button" data-sv="reset" class="sv-reset" aria-label="시점 초기화">↺ <span>초기화</span></button></div></div><div class="sv-empty-state" hidden>이 사진을 불러오지 못했어요.<button type="button" data-sv="seat">3D 시야로 보기</button></div></div><div class="sv-view-footer"><p class="sv-disclaimer"></p><div class="sv-photo-gallery" aria-label="내부 사진 선택">${photos.map((photo,index)=>`<button type="button" data-photo="${index}" aria-label="${escapeHTML(photo.title||`내부 사진 ${index+1}`)}"><img src="${escapeHTML(safeURL(photo.thumbnail||photo.src))}" alt="" loading="lazy"></button>`).join('')}</div></div></section><aside class="sv-sidebar" aria-label="시야 탐색 설정"><div class="sv-panel-title"><span>SEAT FINDER</span><h3>어디서 볼까요?</h3><p>구역과 위치를 바꾸며 시야를 비교해 보세요.</p></div><div class="sv-booked"><span>${options.hasBookedSeat?'예매 선택 좌석':'처음 살펴본 위치'}</span><strong>${escapeHTML(initialLabel)}</strong></div><div class="sv-minimap">${map}${zones.map(zone=>`<button type="button" data-zone="${escapeHTML(zone.id)}" style="left:${Number(zone.x)||50}%;top:${Number(zone.y)||50}%" aria-label="${escapeHTML(zone.label)} 시야 탐색">${escapeHTML(zone.short||zone.id)}</button>`).join('')}</div><div class="sv-select-grid"><label>층<select class="sv-floor-select" aria-label="탐색할 층">${[...new Set(venue==='worldcup'?[0,1]:zones.map(zone=>zone.tier||0))].map(tier=>`<option value="${tier}">${tier+1}층</option>`).join('')}</select></label><label>구역<select class="sv-zone-select" aria-label="탐색할 구역"></select></label></div><fieldset class="sv-location-set"><legend>대표 열 위치</legend><div class="sv-location-buttons">${[[1,'앞쪽'],[4,'중간'],[7,'뒤쪽']].map(([row,label])=>`<button type="button" data-row="${row}">${label}</button>`).join('')}</div></fieldset><fieldset class="sv-location-set"><legend>구역 안 좌석 위치</legend><div class="sv-location-buttons">${[[4,'왼쪽'],[venue==='yes24'?10:15,'가운데'],[venue==='yes24'?17:26,'오른쪽']].map(([number,label])=>`<button type="button" data-number="${number}">${label}</button>`).join('')}</div></fieldset><div class="sv-exploring"><span class="sv-exploring-dot"></span><div><small>지금 둘러보는 위치</small><strong class="sv-exploring-label" aria-live="polite"></strong></div></div><p class="sv-explore-note">시야 탐색은 예매 좌석을 변경하지 않아요.<br>대표 열·좌석 위치는 연습용으로 구성했어요.</p><details class="sv-reference"><summary>사진과 3D 모형 안내 <span>+</span></summary><p>사진은 공연장 내부를 참고하는 자료로, 선택한 좌석에서 촬영한 사진이 아니에요. 3D는 사진과 공식 구역 정보를 참고한 모형이며, 실제 시야·무대 구성·가림은 달라질 수 있어요.</p>${(photoData.observations||[]).slice(0,3).map(text=>`<p class="sv-observation">${escapeHTML(text)}</p>`).join('')}${venueData.sourceUrl?`<a href="${escapeHTML(safeURL(venueData.sourceUrl))}" target="_blank" rel="noopener noreferrer">공식 공연장 안내 ↗</a>`:''}</details></aside></div>`;
+    dialog.innerHTML=`<header class="sv-header"><div class="sv-title-group"><span class="sv-eyebrow">MATCHAPIZZA · VENUE EXPLORER</span><h2 id="sv-title">${escapeHTML(NAMES[venue])}</h2><p class="sv-seat-label">공간을 먼저 둘러보고, 내 자리를 찾아보세요.</p></div><button type="button" class="sv-close" aria-label="공연장 탐색 닫기">×</button></header><div class="sv-explorer"><section class="sv-viewer" aria-label="공연장 시야"><nav class="sv-view-tabs" aria-label="보기 방식">${panorama?'<button type="button" data-sv="panorama">파노라마 체험</button>':''}${vr?'<button type="button" data-sv="vr">실사 360°</button>':''}${photos.length?'<button type="button" data-sv="photo">실제 사진</button>':''}<button type="button" data-sv="seat">3D 좌석 시야</button><button type="button" data-sv="overview">전체 배치</button></nav><div class="sv-stage"><canvas class="sv-canvas" tabindex="0" role="img" aria-label="3D 공연장 모형. 방향키 또는 드래그로 둘러보기, 더하기와 빼기로 확대 축소"></canvas><div class="sv-photo-surface" tabindex="0" role="img" aria-label="공연장 내부 참고 사진. 확대 후 드래그해서 사진을 이동할 수 있습니다." hidden><img class="sv-photo-image" alt="" draggable="false"></div><div class="sv-stage-top"><span class="sv-view-badge"></span><span class="sv-current-position"></span></div><div class="sv-photo-caption" hidden><strong class="sv-photo-title"></strong><p class="sv-photo-description"></p><div class="sv-photo-attribution"><a class="sv-photo-credit" target="_blank" rel="noopener noreferrer"></a><a class="sv-photo-license" target="_blank" rel="noopener noreferrer"></a></div></div><div class="sv-stage-bottom"><span class="sv-drag-hint">드래그해서 둘러보기</span><div class="sv-zoom"><button type="button" data-sv="out" aria-label="축소">−</button><span class="sv-zoom-value" aria-live="polite">1.0×</span><button type="button" data-sv="in" aria-label="확대">+</button><span class="sv-tool-divider"></span><button type="button" data-sv="reset" class="sv-reset" aria-label="시점 초기화">↺ <span>초기화</span></button></div></div><div class="sv-empty-state" hidden>이 사진을 불러오지 못했어요.<button type="button" data-sv="seat">3D 시야로 보기</button></div></div><div class="sv-view-footer"><p class="sv-disclaimer"></p><div class="sv-photo-gallery" aria-label="내부 사진 선택">${photos.map((photo,index)=>`<button type="button" data-photo="${index}" aria-label="${escapeHTML(photo.title||`내부 사진 ${index+1}`)}"><img src="${escapeHTML(safeURL(photo.thumbnail||photo.src))}" alt="" loading="lazy"></button>`).join('')}</div></div></section><aside class="sv-sidebar" aria-label="시야 탐색 설정"><div class="sv-panel-title"><span>SEAT FINDER</span><h3>어디서 볼까요?</h3><p>구역과 위치를 바꾸며 시야를 비교해 보세요.</p></div><div class="sv-booked"><span>${options.hasBookedSeat?'예매 선택 좌석':'처음 살펴본 위치'}</span><strong>${escapeHTML(initialLabel)}</strong></div><div class="sv-minimap">${map}${zones.map(zone=>`<button type="button" data-zone="${escapeHTML(zone.id)}" style="left:${Number(zone.x)||50}%;top:${Number(zone.y)||50}%" aria-label="${escapeHTML(zone.label)} 시야 탐색">${escapeHTML(zone.short||zone.id)}</button>`).join('')}</div><div class="sv-select-grid"><label>층<select class="sv-floor-select" aria-label="탐색할 층">${[...new Set(venue==='worldcup'?[0,1]:zones.map(zone=>zone.tier||0))].map(tier=>`<option value="${tier}">${tier+1}층</option>`).join('')}</select></label><label>구역<select class="sv-zone-select" aria-label="탐색할 구역"></select></label></div><fieldset class="sv-location-set"><legend>대표 열 위치</legend><div class="sv-location-buttons">${[[1,'앞쪽'],[4,'중간'],[7,'뒤쪽']].map(([row,label])=>`<button type="button" data-row="${row}">${label}</button>`).join('')}</div></fieldset><fieldset class="sv-location-set"><legend>구역 안 좌석 위치</legend><div class="sv-location-buttons">${[[4,'왼쪽'],[venue==='yes24'?10:15,'가운데'],[venue==='yes24'?17:26,'오른쪽']].map(([number,label])=>`<button type="button" data-number="${number}">${label}</button>`).join('')}</div></fieldset><div class="sv-exploring"><span class="sv-exploring-dot"></span><div><small>지금 둘러보는 위치</small><strong class="sv-exploring-label" aria-live="polite"></strong></div></div><p class="sv-explore-note">시야 탐색은 예매 좌석을 변경하지 않아요.<br>대표 열·좌석 위치는 연습용으로 구성했어요.</p><details class="sv-reference"><summary>사진과 3D 모형 안내 <span>+</span></summary><p>사진은 공연장 내부를 참고하는 자료로, 선택한 좌석에서 촬영한 사진이 아니에요. 3D는 사진과 공식 구역 정보를 참고한 모형이며, 실제 시야·무대 구성·가림은 달라질 수 있어요.</p>${(photoData.observations||[]).slice(0,3).map(text=>`<p class="sv-observation">${escapeHTML(text)}</p>`).join('')}${venueData.sourceUrl?`<a href="${escapeHTML(safeURL(venueData.sourceUrl))}" target="_blank" rel="noopener noreferrer">공식 공연장 안내 ↗</a>`:''}</details></aside></div>`;
+    if(panorama){
+      const panoramaSurface=document.createElement('div');panoramaSurface.className='sv-panorama';panoramaSurface.hidden=true;
+      dialog.querySelector('.sv-stage').prepend(panoramaSurface);
+      const panoramaPanel=document.createElement('section');panoramaPanel.className='sv-panorama-panel';panoramaPanel.hidden=true;
+      panoramaPanel.innerHTML=`<div class="sv-panel-title"><span>IMMERSIVE PREVIEW</span><h3>고개를 돌려 둘러봐요.</h3><p>드래그로 시선을 옮기고, 확대해서 무대까지 살펴보세요.</p></div><div class="sv-vr-source"><span class="sv-vr-official">${panorama.isGenerated?'AI 재현 · 체험용':'파노라마 체험'}</span><strong>${escapeHTML(panorama.title||NAMES[venue])}</strong><p>${escapeHTML(panorama.description||'공간의 분위기와 시야 탐색 기능을 체험하는 재현 화면입니다.')}</p></div><div class="sv-panorama-guide"><span>↔</span><div><strong>좌우로 드래그</strong><p>주변 객석과 무대를 둘러보세요.</p></div></div><div class="sv-panorama-guide"><span>＋</span><div><strong>휠 또는 확대 버튼</strong><p>궁금한 부분을 가까이 살펴보세요.</p></div></div><p class="sv-vr-note">특정 좌석의 정확한 실제 시야를 나타내지는 않아요.</p>${vr?'<button class="sv-panorama-vr-link" type="button" data-sv="vr">공식 실사 360°도 보기 ↗</button>':''}`;
+      dialog.querySelector('.sv-sidebar').prepend(panoramaPanel);
+    }
+    if(vr){
+      const vrSurface=document.createElement('div');vrSurface.className='sv-vr-surface';vrSurface.hidden=true;
+      vrSurface.innerHTML='<div class="sv-vr-frame-host"></div><div class="sv-vr-loading" role="status"><span class="sv-vr-spinner"></span><strong>실제 공간으로 들어가는 중</strong><span>공식 360° 뷰어를 연결하고 있어요.</span></div>';
+      dialog.querySelector('.sv-stage').prepend(vrSurface);
+      const vrPanel=document.createElement('section');vrPanel.className='sv-vr-panel';vrPanel.hidden=true;
+      vrPanel.innerHTML=`<div class="sv-panel-title"><span>REAL 360° VIEW</span><h3>사진 속 공간으로</h3><p>화면을 드래그해 둘러보고, 촬영 지점을 눌러 이동하세요.</p></div><div class="sv-vr-source"><span class="sv-vr-official">${escapeHTML(vr.provider||'공식 VR')}</span><strong>${escapeHTML(vr.title||'실사 360° 투어')}</strong><p>${escapeHTML(vr.description||'공식 공개 투어에서 제공하는 실제 촬영 공간입니다.')}</p></div>${viewpoints.length?`<div class="sv-vr-views"><h4>대표 촬영 지점</h4>${viewpoints.map((point,index)=>`<button type="button" data-vr-point="${index}" aria-pressed="false"><span>${String(index+1).padStart(2,'0')}</span><strong>${escapeHTML(point.title)}</strong><b aria-hidden="true">↗</b></button>`).join('')}</div>`:''}<p class="sv-vr-note">구역 대표 촬영 지점 · 연습 좌석과 별도로 탐색</p><a class="sv-vr-external" href="${escapeHTML(safeExternalURL(vr.url)||safeExternalURL(vr.embedUrl))}" target="_blank" rel="noopener noreferrer">원본 VR 크게 보기 ↗</a>${safeExternalURL(vr.sourceUrl)?`<a class="sv-vr-credit" href="${escapeHTML(safeExternalURL(vr.sourceUrl))}" target="_blank" rel="noopener noreferrer">공식 자료 출처 ↗</a>`:''}<p class="sv-vr-help">화면이 열리지 않으면 원본 VR을 새 창에서 확인해 주세요.</p>`;
+      dialog.querySelector('.sv-sidebar').prepend(vrPanel);
+    }
+    if(seatPhotoLinks.length){
+      const links=document.createElement('section');links.className='sv-seat-links';
+      links.innerHTML=`<h4>좌석별 실제 시야 사진</h4>${seatPhotoLinks.map(link=>`<a href="${escapeHTML(safeExternalURL(link.url))}" target="_blank" rel="noopener noreferrer"><strong>${escapeHTML(link.title)} ↗</strong>${link.description?`<span>${escapeHTML(link.description)}</span>`:''}</a>`).join('')}`;
+      dialog.querySelector('.sv-sidebar').appendChild(links);
+    }
     document.body.appendChild(dialog);document.body.style.overflow='hidden';
     const canvas=dialog.querySelector('canvas'),ctx=canvas.getContext('2d'),photoSurface=dialog.querySelector('.sv-photo-surface'),photoImage=dialog.querySelector('.sv-photo-image');
-    const initialMode=['seat','overview','photo'].includes(options.mode)?options.mode:photos.length?'photo':'seat';
-    const state=active={dialog,canvas,ctx,scene,venue,details,selection,mode:initialMode==='photo'&&!photos.length?'seat':initialMode,yaw:0,pitch:0,fov:60,frame:0,pointers:new Map(),previous,bodyOverflow,width:0,height:0,photos,photoIndex:clamp(Number.isInteger(options.photoIndex)?options.photoIndex:venue==='yes24'&&photos.length>1?1:0,0,Math.max(0,photos.length-1)),photoFailed:false,photoScale:1,photoX:0,photoY:0};
+    const initialMode=['seat','overview','photo','vr','panorama'].includes(options.mode)?options.mode:photos.length?'photo':'seat';
+    const effectiveMode=initialMode==='panorama'&&!panorama?(photos.length?'photo':'seat'):initialMode==='vr'&&!vr?(photos.length?'photo':'seat'):initialMode==='photo'&&!photos.length?'seat':initialMode;
+    const state=active={dialog,canvas,ctx,scene,venue,details,selection,mode:effectiveMode,panoramaView:null,panoramaFailed:false,panoramaZoom:1,vr,vrIndex:-1,vrURL:'',vrTimer:0,yaw:0,pitch:0,fov:60,frame:0,pointers:new Map(),previous,bodyOverflow,width:0,height:0,photos,photoIndex:clamp(Number.isInteger(options.photoIndex)?options.photoIndex:venue==='yes24'&&photos.length>1?1:0,0,Math.max(0,photos.length-1)),photoFailed:false,photoScale:1,photoX:0,photoY:0};
     const current=()=>active===state;
-    const schedule=()=>{if(current()&&!state.frame)state.frame=requestAnimationFrame(()=>{if(current()){state.frame=0;if(state.mode!=='photo')draw();}});};
+    const schedule=()=>{if(current()&&!state.frame)state.frame=requestAnimationFrame(()=>{if(current()){state.frame=0;if(state.mode==='seat'||state.mode==='overview')draw();}});};
     const rowName=()=>state.details.row<=2?'앞쪽':state.details.row<=5?'중간':'뒤쪽';
     const positionName=()=>state.details.number<=(venue==='yes24'?6:8)?'왼쪽':state.details.number>=(venue==='yes24'?15:22)?'오른쪽':'가운데';
     const transformPhoto=()=>{state.photoX=clamp(state.photoX,-state.width*(state.photoScale-1)/2,state.width*(state.photoScale-1)/2);state.photoY=clamp(state.photoY,-state.height*(state.photoScale-1)/2,state.height*(state.photoScale-1)/2);photoImage.style.transform=`translate(${state.photoX}px,${state.photoY}px) scale(${state.photoScale})`;};
@@ -220,16 +246,42 @@
       dialog.querySelectorAll('[data-photo]').forEach(button=>{const selected=Number(button.dataset.photo)===state.photoIndex;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
       state.photoFailed=false;dialog.querySelector('.sv-empty-state').hidden=true;state.photoScale=1;state.photoX=state.photoY=0;transformPhoto();
     };
+    const updatePanorama=()=>{
+      if(!panorama)return;
+      const surface=dialog.querySelector('.sv-panorama'),panel=dialog.querySelector('.sv-panorama-panel'),visible=state.mode==='panorama';
+      surface.hidden=panel.hidden=!visible;
+      if(!visible){if(state.panoramaView){state.panoramaView.destroy();state.panoramaView=null;}if(state.panoramaFailed||surface.childNodes.length)surface.replaceChildren();state.panoramaFailed=false;return;}
+      if(state.panoramaView||state.panoramaFailed)return;
+      state.panoramaZoom=1;
+      if(!window.MatchaPanorama?.mount){state.panoramaFailed=true;surface.innerHTML='<div class="sv-panorama-error">파노라마를 불러오지 못했어요.<button type="button" data-sv="photo">실제 사진 보기</button></div>';return;}
+      state.panoramaView=window.MatchaPanorama.mount(surface,{src:safeURL(panorama.src),onReady:()=>{if(current())state.panoramaFailed=false;},onError:()=>{if(current()){state.panoramaFailed=true;surface.innerHTML='<div class="sv-panorama-error">이미지를 불러오지 못했어요.<button type="button" data-sv="photo">실제 사진 보기</button></div>';}}});
+    };
+    const updateVR=()=>{
+      if(!vr)return;
+      const surface=dialog.querySelector('.sv-vr-surface'),panel=dialog.querySelector('.sv-vr-panel'),host=dialog.querySelector('.sv-vr-frame-host'),loading=dialog.querySelector('.sv-vr-loading');
+      const visible=state.mode==='vr';surface.hidden=panel.hidden=!visible;
+      if(!visible){if(state.vrURL){host.replaceChildren();state.vrURL='';clearTimeout(state.vrTimer);}return;}
+      const point=viewpoints[state.vrIndex],url=safeExternalURL(point?.embedUrl||vr.embedUrl);
+      dialog.querySelector('.sv-vr-external').href=safeExternalURL(point?.url||vr.url)||url;
+      dialog.querySelectorAll('[data-vr-point]').forEach(button=>{const selected=Number(button.dataset.vrPoint)===state.vrIndex;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+      if(state.vrURL===url)return;
+      state.vrURL=url;loading.hidden=false;clearTimeout(state.vrTimer);
+      const frame=document.createElement('iframe');frame.className='sv-vr-frame';frame.title=point?`${vr.title||NAMES[venue]} · ${point.title}`:vr.title||`${NAMES[venue]} 실사 360도`;frame.allow='fullscreen; accelerometer; gyroscope; xr-spatial-tracking';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
+      frame.addEventListener('load',()=>{if(current()&&host.firstElementChild===frame){loading.hidden=true;clearTimeout(state.vrTimer);}},{once:true});
+      frame.src=url;host.replaceChildren(frame);
+      state.vrTimer=setTimeout(()=>{if(current()&&state.mode==='vr')loading.hidden=true;},12000);
+    };
     const update=()=>{
       if(!current())return;
-      const photoMode=state.mode==='photo';canvas.hidden=photoMode;photoSurface.hidden=!photoMode;dialog.querySelector('.sv-empty-state').hidden=!(photoMode&&state.photoFailed);
-      dialog.classList.toggle('sv-photo-mode',photoMode);dialog.querySelector('.sv-photo-caption').hidden=!photoMode;dialog.querySelector('.sv-photo-gallery').hidden=!photoMode;
+      const photoMode=state.mode==='photo',vrMode=state.mode==='vr',panoramaMode=state.mode==='panorama';canvas.hidden=photoMode||vrMode||panoramaMode;photoSurface.hidden=!photoMode;dialog.querySelector('.sv-empty-state').hidden=!(photoMode&&state.photoFailed);
+      dialog.classList.toggle('sv-photo-mode',photoMode);dialog.classList.toggle('sv-vr-mode',vrMode);dialog.classList.toggle('sv-panorama-mode',panoramaMode);updateVR();updatePanorama();dialog.querySelector('.sv-photo-caption').hidden=!photoMode;dialog.querySelector('.sv-photo-gallery').hidden=!photoMode;
       dialog.querySelectorAll('.sv-view-tabs button').forEach(button=>{const selected=button.dataset.sv===state.mode;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
-      dialog.querySelector('.sv-view-badge').textContent=photoMode?'실제 내부 사진':state.mode==='overview'?'전체 배치':'3D 모의 시야';
-      dialog.querySelector('.sv-current-position').textContent=photoMode?'공간 참고 사진':`${state.selection.zoneLabel||state.selection.zoneId} · ${rowName()}`;
+      dialog.querySelector('.sv-stage-top').hidden=vrMode;dialog.querySelector('.sv-stage-bottom').hidden=vrMode;
+      dialog.querySelector('.sv-view-badge').textContent=panoramaMode?(panorama.isGenerated?'AI 재현 · 체험용':'파노라마 체험'):photoMode?'실제 내부 사진':state.mode==='overview'?'전체 배치':'3D 모의 시야';
+      dialog.querySelector('.sv-current-position').textContent=panoramaMode?'360° 둘러보기':photoMode?'공간 참고 사진':`${state.selection.zoneLabel||state.selection.zoneId} · ${rowName()}`;
       dialog.querySelector('.sv-drag-hint').textContent=photoMode?'확대 후 드래그로 사진 이동':'드래그해서 둘러보기';
-      dialog.querySelector('.sv-zoom-value').textContent=(photoMode?state.photoScale:Math.tan(Math.PI/6)/Math.tan(state.fov*Math.PI/360)).toFixed(1)+'×';
-      dialog.querySelector('.sv-disclaimer').textContent=photoMode?'선택 좌석에서 촬영한 사진이 아닌, 공연장 내부 참고 사진이에요.':'사진과 공식 구역 정보를 참고한 3D 모형 · 실제 시야와 다를 수 있어요.';
+      dialog.querySelector('.sv-zoom-value').textContent=panoramaMode?'360°':(photoMode?state.photoScale:Math.tan(Math.PI/6)/Math.tan(state.fov*Math.PI/360)).toFixed(1)+'×';
+      dialog.querySelector('.sv-disclaimer').textContent=panoramaMode?(panorama.isGenerated?'실제 공간을 참고해 AI로 재현한 체험 화면 · 특정 좌석의 촬영 사진이 아닙니다.':'파노라마 체험 · 선택 좌석과는 별도의 대표 시점입니다.'):vrMode?'실제 촬영된 대표 지점에서 둘러보는 360° VR · 촬영 시점과 현재 모습은 다를 수 있어요.':photoMode?'선택 좌석에서 촬영한 사진이 아닌, 공연장 내부 참고 사진이에요.':'사진과 공식 구역 정보를 참고한 3D 모형 · 실제 시야와 다를 수 있어요.';
       dialog.querySelector('.sv-floor-select').value=String(state.details.tier);
       const floorZones=venue==='worldcup'?zones:zones.filter(zone=>(zone.tier||0)===state.details.tier);
       const zoneSelect=dialog.querySelector('.sv-zone-select');zoneSelect.innerHTML=floorZones.map(zone=>`<option value="${escapeHTML(zone.id)}">${escapeHTML(zone.label)}</option>`).join('');zoneSelect.value=String(state.selection.zoneId);
@@ -239,15 +291,16 @@
       dialog.querySelector('.sv-exploring-label').textContent=`${state.selection.zoneLabel||state.selection.zoneId} · ${rowName()} ${positionName()}`;
       transformPhoto();schedule();
     };
-    const reset=()=>{state.yaw=state.pitch=0;state.fov=60;state.photoScale=1;state.photoX=state.photoY=0;update();};
-    const zoom=delta=>{if(!current())return;if(state.mode==='photo')state.photoScale=clamp(state.photoScale-delta*.035,1,3.5);else state.fov=clamp(state.fov+delta,35,85);update();};
+    const reset=()=>{if(state.mode==='panorama'){state.panoramaView?.reset();state.panoramaZoom=1;}state.yaw=state.pitch=0;state.fov=60;state.photoScale=1;state.photoX=state.photoY=0;update();};
+    const zoom=delta=>{if(!current())return;if(state.mode==='panorama'){state.panoramaView?.zoom(-delta/6);state.panoramaZoom=clamp(state.panoramaZoom-delta*.025,.7,2.5);}else if(state.mode==='photo')state.photoScale=clamp(state.photoScale-delta*.035,1,3.5);else state.fov=clamp(state.fov+delta,35,85);update();};
     const explore=patch=>{state.selection={...state.selection,...patch,seatPosition:undefined};state.details=seatDetails(state.selection,venue);state.mode='seat';state.yaw=state.pitch=0;state.fov=60;dialog.querySelector('.sv-empty-state').hidden=true;update();};
     const selectZone=id=>{const zone=zones.find(item=>item.id===String(id));if(zone)explore({...zone,zoneId:zone.id,zoneLabel:zone.label,tier:venue==='worldcup'?state.details.tier:zone.tier});};
     dialog.querySelector('.sv-close').addEventListener('click',close);
     dialog.addEventListener('close',()=>{if(current())cleanup();},{once:true});
     dialog.addEventListener('click',event=>{
       const button=event.target.closest('button');if(!button||!current())return;
-      if(button.dataset.sv){const action=button.dataset.sv;if(['seat','overview','photo'].includes(action)){state.mode=action;dialog.querySelector('.sv-empty-state').hidden=true;reset();}else if(action==='reset')reset();else zoom(action==='in'?-6:6);}
+      if(button.dataset.sv){const action=button.dataset.sv;if(['seat','overview','photo','vr','panorama'].includes(action)){state.mode=action==='photo'&&!photos.length?'seat':action==='panorama'&&!panorama?(photos.length?'photo':'seat'):action==='vr'&&!vr?(photos.length?'photo':'seat'):action;dialog.querySelector('.sv-empty-state').hidden=true;reset();}else if(action==='reset')reset();else zoom(action==='in'?-6:6);}
+      if(button.dataset.vrPoint!==undefined){const index=Number(button.dataset.vrPoint);if(viewpoints[index]){state.vrIndex=index;state.mode='vr';update();}}
       if(button.dataset.zone)selectZone(button.dataset.zone);
       if(button.dataset.row)explore({row:Number(button.dataset.row)});
       if(button.dataset.number)explore({number:Number(button.dataset.number)});
@@ -274,7 +327,7 @@
     dialog.showModal();
     const resize=()=>{if(!current())return;const rect=(state.mode==='photo'?photoSurface:dialog.querySelector('.sv-stage')).getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);state.width=rect.width;state.height=rect.height;canvas.width=Math.max(1,Math.round(rect.width*dpr));canvas.height=Math.max(1,Math.round(rect.height*dpr));ctx?.setTransform(dpr,0,0,dpr,0,0);transformPhoto();schedule();};
     state.observer=new ResizeObserver(resize);state.observer.observe(dialog.querySelector('.sv-stage'));resize();loadPhoto();update();
-    (state.mode==='photo'?photoSurface:canvas).focus({preventScroll:true});
+    (state.mode==='panorama'?dialog.querySelector('[data-sv="panorama"]'):state.mode==='vr'?dialog.querySelector('[data-sv="vr"]'):state.mode==='photo'?photoSurface:canvas).focus({preventScroll:true});
   }
 
   function draw(){

@@ -1,4 +1,4 @@
-/* Actual venue reference photographs. Never map these to an arbitrary selected seat. */
+/* Actual source photographs, optional official VR, and clearly labeled AI panorama demos. */
 window.MatchaVenuePhotos = {
   "gocheok": {
     "sourceUrl": "https://sisul.or.kr/open_content/skydome/guidance/dome.jsp",
@@ -19,7 +19,63 @@ window.MatchaVenuePhotos = {
         "cameraLocation": "외야에서 내야 방향. 정확한 구역·열·좌석 번호는 미확인.",
         "is360": false
       }
-    ]
+    ],
+    "panorama": {
+      "src": "panorama-gocheok-demo.png",
+      "title": "돔구장 내야 중앙",
+      "description": "공연장 사진을 참고해 AI로 재현한 시연용 공간입니다. 실제 좌석별 촬영·실측 화면은 아니에요.",
+      "isGenerated": true
+    },
+    "vr": {
+      "title": "고척스카이돔 공식 실사 VR",
+      "embedUrl": "https://players.cupix.com/p/coef1TH7",
+      "url": "https://players.cupix.com/s/coef1TH7.html",
+      "sourceUrl": "https://www.sisul.or.kr/open_content/publicity/youtubeDetail.do?yt_id=khBlUNpjioc",
+      "provider": "서울시설공단 · Cupix",
+      "description": "실제로 촬영한 구역을 둘러보세요. 2019–2022년 자료이며 브라우저에 따라 실행되지 않을 수 있어요.",
+      "viewpoints": [
+        {
+          "title": "내야 하층 중앙",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiWk5qSzcxTEMiLCJzdGF0aW9uIjoicUY5N0ZsNGIiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbMC4wMDM0OTY3NDUxMzU3OTYwNjYsLTAuNjk0MDQzMjkwMDkyMTg3MiwtMC4wMDQ1Njg5MzkxMzg3NDQxMDgsMC43MTk5MTAyNzg0Njk5MDM0XSwiem9vbSI6MTAwfQ%3D%3D",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiWk5qSzcxTEMiLCJzdGF0aW9uIjoicUY5N0ZsNGIiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbMC4wMDM0OTY3NDUxMzU3OTYwNjYsLTAuNjk0MDQzMjkwMDkyMTg3MiwtMC4wMDQ1Njg5MzkxMzg3NDQxMDgsMC43MTk5MTAyNzg0Njk5MDM0XSwiem9vbSI6MTAwfQ%3D%3D"
+        },
+        {
+          "title": "내야 하층 1루측",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiWk5qSzcxTEMiLCJzdGF0aW9uIjoiZ01XcWx4Y0oiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMDcyMjMyMzEwNzI2OTU2NDgsLTAuMTg0MjQwMzE5NzQ3ODA4OTcsLTAuMDAxMTUzMzE0Mjk0MzM4NTU1NiwwLjk4MDIyMjc2NDM0MTA0OTNdLCJ6b29tIjoxMDB9",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiWk5qSzcxTEMiLCJzdGF0aW9uIjoiZ01XcWx4Y0oiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMDcyMjMyMzEwNzI2OTU2NDgsLTAuMTg0MjQwMzE5NzQ3ODA4OTcsLTAuMDAxMTUzMzE0Mjk0MzM4NTU1NiwwLjk4MDIyMjc2NDM0MTA0OTNdLCJ6b29tIjoxMDB9"
+        },
+        {
+          "title": "내야 하층 3루측",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiWk5qSzcxTEMiLCJzdGF0aW9uIjoiR0ZpZWNTMkUiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMTg2MzE1Njc4MjY3NzY2OTMsMC4yMzUxMzUzMjc5MTAxNjYsMC4wNTg4MzczNDIyNDY2NzUzOTYsMC45NTIxMjE4NDc2NDIxNzQ3XSwiem9vbSI6MTAwfQ%3D%3D",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiWk5qSzcxTEMiLCJzdGF0aW9uIjoiR0ZpZWNTMkUiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMTg2MzE1Njc4MjY3NzY2OTMsMC4yMzUxMzUzMjc5MTAxNjYsMC4wNTg4MzczNDIyNDY2NzUzOTYsMC45NTIxMjE4NDc2NDIxNzQ3XSwiem9vbSI6MTAwfQ%3D%3D"
+        },
+        {
+          "title": "내야 상층 중앙",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiT3V3NktEWngiLCJzdGF0aW9uIjoiazhCclVyUHUiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMTY2MDYxNDEwMDkyNzkxMywwLjYxODAwNDI5NzM0NTU1NTUsMC4xNTU4MTczMzU1NjEwOTQ3NiwwLjc1MjQ3Mjc1OTk1ODE2NzFdLCJ6b29tIjoxMDB9",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiT3V3NktEWngiLCJzdGF0aW9uIjoiazhCclVyUHUiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMTY2MDYxNDEwMDkyNzkxMywwLjYxODAwNDI5NzM0NTU1NTUsMC4xNTU4MTczMzU1NjEwOTQ3NiwwLjc1MjQ3Mjc1OTk1ODE2NzFdLCJ6b29tIjoxMDB9"
+        },
+        {
+          "title": "외야 하층 중앙",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiVmI0ejMxTEciLCJzdGF0aW9uIjoiQWxmb2ZYeGoiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMjE4MTY0NjIwNDMzMTUxMjQsMC4yMDMzNDkwOTg3MzU0NTY1NiwwLjA1ODA1MDA5NjM4MjU5OTQ4LDAuOTUyNzI0MjY2OTAyMzk2XSwiem9vbSI6MTAwfQ%3D%3D",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiVmI0ejMxTEciLCJzdGF0aW9uIjoiQWxmb2ZYeGoiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMjE4MTY0NjIwNDMzMTUxMjQsMC4yMDMzNDkwOTg3MzU0NTY1NiwwLjA1ODA1MDA5NjM4MjU5OTQ4LDAuOTUyNzI0MjY2OTAyMzk2XSwiem9vbSI6MTAwfQ%3D%3D"
+        },
+        {
+          "title": "외야 상층 중앙",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiSGRYaXpzMUEiLCJzdGF0aW9uIjoiaGRzNk1PT1YiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMDg3Mzg1Mjg0NTM2MDM2OTksMC43NjM2OTUwOTgxMTY4NTc0LDAuMTI0MzQzMjkyNTI1NzEyNDUsMC42Mjc0MzMxNDc2NDQxOTddLCJ6b29tIjoxMDB9",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiSGRYaXpzMUEiLCJzdGF0aW9uIjoiaGRzNk1PT1YiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMDg3Mzg1Mjg0NTM2MDM2OTksMC43NjM2OTUwOTgxMTY4NTc0LDAuMTI0MzQzMjkyNTI1NzEyNDUsMC42Mjc0MzMxNDc2NDQxOTddLCJ6b29tIjoxMDB9"
+        },
+        {
+          "title": "다이아몬드석 중(D04)",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiRW5JRXJZTkgiLCJzdGF0aW9uIjoiSktRcFpqaUwiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMTM5NjE3NDE0OTAyMDE5MTUsMC4xNjQxMTQ5OTk3NzE5Nzg4NSwwLjAzMTE2NDczNjQ1MDkxMDIzLDAuOTc2MDEzMzIxMzc4MjgyMl0sInpvb20iOjEwMH0%3D",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoiRW5JRXJZTkgiLCJzdGF0aW9uIjoiSktRcFpqaUwiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMTM5NjE3NDE0OTAyMDE5MTUsMC4xNjQxMTQ5OTk3NzE5Nzg4NSwwLjAzMTE2NDczNjQ1MDkxMDIzLDAuOTc2MDEzMzIxMzc4MjgyMl0sInpvb20iOjEwMH0%3D"
+        },
+        {
+          "title": "가족석",
+          "embedUrl": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoid0w5U2VzdmQiLCJzdGF0aW9uIjoieExXNzc4YVYiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMDMzODgyOTEzNjI4OTcyODEsLTAuMTM2MjQ1MTgyMTI4OTkzNzUsLTAuMDEwMTI5NzI4NzgwNDA5OTU1LDAuOTkwMDQzNzI5ODk1NTQ1OF0sInpvb20iOjEwMH0%3D",
+          "url": "https://players.cupix.com/p/coef1TH7?vp=eyJ2ZXIiOjIsImZsb29yIjoidzlOb1ROdzIiLCJzZWN0aW9uIjoid0w5U2VzdmQiLCJzdGF0aW9uIjoieExXNzc4YVYiLCJtb2RlIjoiRmlyc3RQZXJzb24iLCJ0ZXh0dXJlIjpmYWxzZSwidmlld3BvaW50IjpbLTAuMDMzODgyOTEzNjI4OTcyODEsLTAuMTM2MjQ1MTgyMTI4OTkzNzUsLTAuMDEwMTI5NzI4NzgwNDA5OTU1LDAuOTkwMDQzNzI5ODk1NTQ1OF0sInpvb20iOjEwMH0%3D"
+        }
+      ]
+    }
   },
   "worldcup": {
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seoul_World_Cup_Stadium_(2018)_07.jpg",
@@ -40,6 +96,19 @@ window.MatchaVenuePhotos = {
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
         "cameraLocation": "관람석 통로 아래에서 내부를 촬영. 원본 위치정보와 EXIF 좌표가 서로 다르므로 특정 구역·열·좌석으로 연결하지 않음.",
         "is360": false
+      }
+    ],
+    "panorama": {
+      "src": "panorama-worldcup-demo.png",
+      "title": "축구장 중앙 스탠드",
+      "description": "공연장 사진을 참고해 AI로 재현한 시연용 공간입니다. 실제 좌석별 촬영·실측 화면은 아니에요.",
+      "isGenerated": true
+    },
+    "seatPhotoLinks": [
+      {
+        "title": "FC서울 공식 VR",
+        "url": "https://m.fcseoul.com/vr/main",
+        "description": "공식 사이트에서 열기 · 제공 상태에 따라 연결이 제한될 수 있어요."
       }
     ]
   },
@@ -83,6 +152,24 @@ window.MatchaVenuePhotos = {
         "licenseUrl": "https://m.ch.yes24.com/article/details/38845",
         "cameraLocation": "1층 바닥보다 높은 위치에서 객석과 무대를 사선으로 내려다봄. 2층 좌석인지 별도 촬영 위치인지는 확인되지 않음.",
         "is360": false
+      }
+    ],
+    "panorama": {
+      "src": "panorama-yes24-demo.png",
+      "title": "라이브홀 중앙 객석",
+      "description": "공연장 사진을 참고해 AI로 재현한 시연용 공간입니다. 실제 좌석별 촬영·실측 화면은 아니에요.",
+      "isGenerated": true
+    },
+    "seatPhotoLinks": [
+      {
+        "title": "YES24 좌석별 실제 사진",
+        "url": "https://www.offmate.kr/seat-map/9",
+        "description": "오프메이트 · 좌석을 선택해 관람자 사진 확인"
+      },
+      {
+        "title": "X·Y·Z 구역 직접 촬영 후기",
+        "url": "https://juduaaa.tistory.com/192",
+        "description": "관람자 사진 · 2019년 촬영"
       }
     ]
   }
